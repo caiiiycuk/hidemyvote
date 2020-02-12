@@ -1,6 +1,13 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+    ext {
+        javacvVersion = '1.5.2'
+        lithoVersion = '0.34.0'
+        frescoVersion = '2.1.0'
+        daggerVersion = '2.26'
+    }
+
     repositories {
         google()
         jcenter()

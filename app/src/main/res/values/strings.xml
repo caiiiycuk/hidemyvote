@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">RuVote</string>
+    <string name="capture_title">01. Take screenshot</string>
+    <string name="camera_permission">Unable to access camera, please check permissions</string>
+    <string name="unable_to_take_picture">Unable to take picture</string>
+    <string name="tap_on_vote_box">2. Tap on vote box</string>
+    <string name="select_action_to_do">3. Select action to do</string>
 </resources>

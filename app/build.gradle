@@ -2,9 +2,9 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.1"
+    buildToolsVersion "29.0.2"
     defaultConfig {
-        applicationId "com.example.smartvote"
+        applicationId "com.github.caiiiycuk.ruvote"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
@@ -24,21 +24,30 @@ android {
 }
 
 dependencies {
-//    implementation group: 'org.bytedeco', name: 'javacv-platform', version: '1.5.2'
-//    implementation group: 'org.bytedeco', name: 'javacv', version: '1.5.2'
-//    implementation group: 'org.bytedeco.javacpp-presets', name: 'opencv', version: '4.0.1-1.4.4', classifier: 'android-x86'
-    implementation group: 'org.bytedeco', name: 'javacv', version: '1.5.2'
-    implementation group: 'org.bytedeco', name: 'opencv', version: '4.1.2-1.5.2', classifier: 'android-arm64'
-    implementation group: 'org.bytedeco', name: 'ffmpeg', version: '4.2.1-1.5.2', classifier: 'android-arm64'
-    implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.7-1.5.2', classifier: 'android-arm64'
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
+    testAnnotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
 
-    implementation "androidx.camera:camera-core:1.0.0-alpha06"
-    implementation "androidx.camera:camera-camera2:1.0.0-alpha06"
+    implementation group: 'org.bytedeco', name: 'javacv', version: javacvVersion
+    implementation group: 'org.bytedeco', name: 'opencv', version: "4.1.2-$javacvVersion", classifier: 'android-x86'
+    implementation group: 'org.bytedeco', name: 'ffmpeg', version: "4.2.1-$javacvVersion", classifier: 'android-x86'
+    implementation group: 'org.bytedeco', name: 'openblas', version: "0.3.7-$javacvVersion", classifier: 'android-x86'
+
+    implementation 'com.facebook.soloader:soloader:0.8.1'
+    implementation "com.facebook.litho:litho-core:$lithoVersion"
+    implementation "com.facebook.litho:litho-widget:$lithoVersion"
+    debugImplementation "com.facebook.litho:litho-annotations:$lithoVersion"
+    annotationProcessor "com.facebook.litho:litho-processor:$lithoVersion"
+
+    implementation 'com.pnikosis:materialish-progress:1.7'
+
+    implementation 'androidx.camera:camera-core:1.0.0-alpha06'
+    implementation 'androidx.camera:camera-camera2:1.0.0-alpha06'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+    testImplementation 'junit:junit:4.13'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }

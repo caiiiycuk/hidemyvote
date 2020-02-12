@@ -1,4 +1,4 @@
-package com.github.caiiiycuk.ruvote;
+package com.github.caiiiycuk.ruvote.cv;
 
 import android.graphics.Bitmap;
 
