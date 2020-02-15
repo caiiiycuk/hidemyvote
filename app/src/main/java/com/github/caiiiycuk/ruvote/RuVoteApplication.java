@@ -5,9 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.camera.core.ImageProxy;
 
 import com.facebook.soloader.SoLoader;
 import com.github.caiiiycuk.ruvote.di.ApplicationComponent;
@@ -30,13 +28,20 @@ public class RuVoteApplication extends Application {
         return currentBitmap;
     }
 
-    public static void setCurrentBitmap(@Nullable Bitmap currentBitmap) {
+    public static void setCurrentBitmap(@Nullable Bitmap bitmap) {
         Bitmap prevBitmap = RuVoteApplication.currentBitmap;
         if (prevBitmap != null) {
             prevBitmap.recycle();
         }
 
-        RuVoteApplication.currentBitmap = currentBitmap;
+        if (bitmap == null) {
+            RuVoteApplication.currentBitmap = null;
+            return;
+        }
+
+        Bitmap rgb565 = bitmap.copy(Bitmap.Config.RGB_565, false);
+        bitmap.recycle();
+        RuVoteApplication.currentBitmap = rgb565;
     }
 
     @Override
@@ -45,7 +50,7 @@ public class RuVoteApplication extends Application {
         instance = this;
         SoLoader.init(this, false);
 
-        setCurrentBitmap(BitmapFactory.decodeResource(getResources(), R.raw.bb));
+        setCurrentBitmap(BitmapFactory.decodeResource(getResources(), R.raw.bb2));
         applicationComponent = DaggerApplicationComponent.create();
     }
 

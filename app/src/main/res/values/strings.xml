@@ -4,5 +4,7 @@
     <string name="camera_permission">Unable to access camera, please check permissions</string>
     <string name="unable_to_take_picture">Unable to take picture</string>
     <string name="tap_on_vote_box">2. Tap on vote box</string>
-    <string name="select_action_to_do">3. Select action to do</string>
+    <string name="select_method">3. Select method</string>
+    <string name="method_soft">SOFT</string>
+    <string name="method_hard">HARD</string>
 </resources>

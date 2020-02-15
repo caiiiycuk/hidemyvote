@@ -1,6 +1,7 @@
 package com.github.caiiiycuk.ruvote.activity;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -75,4 +76,5 @@ public class RoiActivity extends AppCompatActivity {
 
         super.onStop();
     }
+
 }
