@@ -26,7 +26,8 @@ import com.facebook.yoga.YogaEdge;
 import com.facebook.yoga.YogaJustify;
 import com.facebook.yoga.YogaPositionType;
 import com.github.caiiiycuk.ruvote.R;
-import com.github.caiiiycuk.ruvote.cv.ROIRenderer;
+import com.github.caiiiycuk.ruvote.cv.ROI;
+import com.github.caiiiycuk.ruvote.cv.ROICalculator;
 import com.github.caiiiycuk.ruvote.ui.Ui;
 import com.github.caiiiycuk.ruvote.ui.widget.ProgressWheel;
 import com.github.caiiiycuk.ruvote.ui.widget.Title;
@@ -38,8 +39,8 @@ public class RoiScreenSpec {
 
     @OnCreateLayout
     static Component onCreateLayout(ComponentContext c,
-                                    @Prop Bitmap roiBitmap,
-                                    @State Bitmap roiPolygon,
+                                    @Prop Bitmap bitmap,
+                                    @State ROI roi,
                                     @State int method) {
         return Column.create(c)
                 .child(Title.create(c)
@@ -53,28 +54,28 @@ public class RoiScreenSpec {
                         .paddingRes(YogaEdge.VERTICAL, R.dimen.identHalf)
                         .child(Text.create(c)
                                 .paddingRes(YogaEdge.ALL, R.dimen.border)
-                                .backgroundRes(method == ROIRenderer.METHOD_SOFT ? R.color.colorSelected : R.color.colorPrimary)
+                                .backgroundRes(method == ROICalculator.METHOD_SOFT ? R.color.colorSelected : R.color.colorPrimary)
                                 .textSizeRes(R.dimen.method_text_size)
                                 .textColorRes(R.color.neutralTextColor)
                                 .textRes(R.string.method_soft)
-                                .clickHandler(RoiScreen.onMethodClick(c, ROIRenderer.METHOD_SOFT))
+                                .clickHandler(RoiScreen.onMethodClick(c, ROICalculator.METHOD_SOFT))
                                 .build())
                         .child(Text.create(c)
                                 .paddingRes(YogaEdge.ALL, R.dimen.border)
-                                .backgroundRes(method == ROIRenderer.METHOD_HARD ? R.color.colorSelected : R.color.colorPrimary)
+                                .backgroundRes(method == ROICalculator.METHOD_HARD ? R.color.colorSelected : R.color.colorPrimary)
                                 .textSizeRes(R.dimen.method_text_size)
                                 .textColorRes(R.color.neutralTextColor)
                                 .textRes(R.string.method_hard)
-                                .clickHandler(RoiScreen.onMethodClick(c, ROIRenderer.METHOD_HARD))
+                                .clickHandler(RoiScreen.onMethodClick(c, ROICalculator.METHOD_HARD))
                                 .build())
                         .build())
                 .child(Image.create(c)
                         .flexGrow(1)
                         .scaleType(ImageView.ScaleType.FIT_CENTER)
                         .drawable(new BitmapDrawable(c.getResources(),
-                                roiPolygon == null || roiPolygon.isRecycled() ? roiBitmap : roiPolygon))
+                                roi == null ? bitmap : roi.bitmap))
                         .build())
-                .child(roiPolygon == null || roiPolygon.isRecycled() ? Row.create(c)
+                .child(roi == null ? Row.create(c)
                         .backgroundRes(R.color.modalBackground)
                         .positionType(YogaPositionType.ABSOLUTE)
                         .positionPx(YogaEdge.ALL, 0)
@@ -84,59 +85,70 @@ public class RoiScreenSpec {
                                 .radiusPx(Ui.getPx(R.dimen.modal_loader_size))
                                 .build())
                         .build() : null)
+                .child(Image.create(c)
+                        .background(Ui.circle(R.color.colorPrimaryDark))
+                        .paddingRes(YogaEdge.ALL, R.dimen.ident)
+//                        .drawableRes(android.R.drawable.ic
+                        .widthRes(R.dimen.icon_size)
+                        .aspectRatio(1.0f)
+                        .scaleType(ImageView.ScaleType.FIT_CENTER)
+                        .positionType(YogaPositionType.ABSOLUTE)
+                        .positionPercent(YogaEdge.RIGHT, 10)
+                        .positionPercent(YogaEdge.BOTTOM, 10)
+                        .build())
                 .build();
     }
 
     @OnAttached
     static void onAttached(ComponentContext c,
                            @Prop Executor executor,
-                           @Prop Bitmap roiBitmap,
+                           @Prop Bitmap bitmap,
                            @State int method) {
-        updateRoi(c, executor, roiBitmap, method);
+        updateRoi(c, executor, bitmap, method);
     }
 
     @OnDetached
-    static void onDetached(ComponentContext c, @State Bitmap royPolygon) {
-        if (royPolygon != null) {
-            royPolygon.recycle();
+    static void onDetached(ComponentContext c, @State ROI roi) {
+        if (roi != null) {
+            roi.recycle();
         }
     }
 
     @OnUpdateState
-    static void setRoiPolygon(StateValue<Bitmap> roiPolygon, @Param Bitmap newBitmap) {
-        if (roiPolygon.get() != null) {
-            roiPolygon.get().recycle();
+    static void setRoiPolygon(StateValue<ROI> roi, @Param ROI newRoi) {
+        if (roi.get() != null) {
+            roi.get().recycle();
         }
 
-        roiPolygon.set(newBitmap);
+        roi.set(newRoi);
     }
 
     @OnUpdateState
     static void setMethod(StateValue<Integer> method,
                           @Param int newMethod,
                           @Param Executor pExecutor,
-                          @Param Bitmap pRoiBitmap,
+                          @Param Bitmap pBitmap,
                           @Param ComponentContext pContext) {
         if (method.get() == newMethod) {
             return;
         }
 
         method.set(newMethod);
-        updateRoi(pContext, pExecutor, pRoiBitmap, newMethod);
+        updateRoi(pContext, pExecutor, pBitmap, newMethod);
     }
 
     @OnEvent(ClickEvent.class)
     static void onMethodClick(ComponentContext c,
                               @Prop Executor executor,
-                              @Prop Bitmap roiBitmap,
+                              @Prop Bitmap bitmap,
                               @Param int newMethod) {
-        RoiScreen.setMethod(c, newMethod, executor, roiBitmap, c);
+        RoiScreen.setMethod(c, newMethod, executor, bitmap, c);
     }
 
-    private static void updateRoi(ComponentContext c, Executor executor, Bitmap roiBitmap, int method) {
+    private static void updateRoi(ComponentContext c, Executor executor, Bitmap bitmap, int method) {
         executor.execute(() -> {
-            Bitmap roiPolygon = ROIRenderer.renderRoi(roiBitmap, method);
-            RoiScreen.setRoiPolygon(c, roiPolygon);
+            ROI roi = ROICalculator.calculate(bitmap, method);
+            RoiScreen.setRoiPolygon(c, roi);
         });
     }
 }

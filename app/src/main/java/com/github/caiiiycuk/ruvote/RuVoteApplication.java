@@ -50,7 +50,7 @@ public class RuVoteApplication extends Application {
         instance = this;
         SoLoader.init(this, false);
 
-        setCurrentBitmap(BitmapFactory.decodeResource(getResources(), R.raw.bb2));
+        setCurrentBitmap(BitmapFactory.decodeResource(getResources(), R.raw.bb));
         applicationComponent = DaggerApplicationComponent.create();
     }
 

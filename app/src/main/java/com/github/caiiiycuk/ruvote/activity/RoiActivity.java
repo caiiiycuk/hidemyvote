@@ -1,7 +1,6 @@
 package com.github.caiiiycuk.ruvote.activity;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -9,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.facebook.litho.ComponentContext;
 import com.facebook.litho.LithoView;
-import com.github.caiiiycuk.ruvote.cv.ROIRenderer;
 import com.github.caiiiycuk.ruvote.di.Injector;
 import com.github.caiiiycuk.ruvote.screen.RoiScreen;
 
@@ -61,7 +59,7 @@ public class RoiActivity extends AppCompatActivity {
 
         ComponentContext c = new ComponentContext(this);
         LithoView view = LithoView.create(this, RoiScreen.create(c)
-                .roiBitmap(roiBitmap)
+                .bitmap(roiBitmap)
                 .executor(executor)
                 .build());
 
