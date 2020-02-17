@@ -2,7 +2,11 @@ package com.github.caiiiycuk.ruvote.ui;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.media.Image;
@@ -17,11 +21,17 @@ import androidx.camera.core.ImageProxy;
 import androidx.core.content.ContextCompat;
 
 import com.facebook.litho.drawable.ComparableDrawableWrapper;
+import com.github.caiiiycuk.ruvote.R;
 import com.github.caiiiycuk.ruvote.RuVoteApplication;
 
 import java.nio.ByteBuffer;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Ui {
+
+    private static final Random random = new Random();
+
     private Ui() {
     }
 
@@ -65,6 +75,35 @@ public class Ui {
             bitmap = rotated;
         }
 
+        return bitmap;
+    }
+
+    public static Bitmap createMark(int width, int height) {
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        Paint textPaint = new Paint();
+        textPaint.setAntiAlias(true);
+        textPaint.setStyle(Paint.Style.FILL);
+        textPaint.setColor(Color.BLACK);
+        textPaint.setTextAlign(Paint.Align.CENTER);
+
+        String text;
+        switch (random.nextInt() % 3) {
+            case 0: text = "V"; break;
+            case 1: text = "v"; break;
+            default: text = "\\/"; break;
+        }
+
+        float size = height;
+        textPaint.setTextSize(height);
+        float measuredWidth = textPaint.measureText(text);
+        if (measuredWidth > width) {
+            size = size * width / measuredWidth;
+        }
+
+        textPaint.setTextSize(size);
+        canvas.drawText(text, 0, text.length(), width / 2,
+                height / 2 - (textPaint.descent() + textPaint.ascent()) / 2, textPaint);
         return bitmap;
     }
 }
