@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import com.facebook.soloader.SoLoader;
 import com.github.caiiiycuk.ruvote.di.ApplicationComponent;
 import com.github.caiiiycuk.ruvote.di.DaggerApplicationComponent;
+import com.github.caiiiycuk.ruvote.ui.Ui;
 
 public class RuVoteApplication extends Application {
 
@@ -50,6 +51,7 @@ public class RuVoteApplication extends Application {
         instance = this;
         SoLoader.init(this, false);
 
+        Ui.initFonts(this);
         setCurrentBitmap(BitmapFactory.decodeResource(getResources(), R.raw.bb));
         applicationComponent = DaggerApplicationComponent.create();
     }

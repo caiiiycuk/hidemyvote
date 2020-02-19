@@ -10,6 +10,7 @@ import com.facebook.litho.Component;
 import com.facebook.litho.ComponentContext;
 import com.facebook.litho.Row;
 import com.facebook.litho.StateValue;
+import com.facebook.litho.VisibilityChangedEvent;
 import com.facebook.litho.annotations.LayoutSpec;
 import com.facebook.litho.annotations.OnAttached;
 import com.facebook.litho.annotations.OnCreateLayout;
@@ -36,6 +37,8 @@ import org.bytedeco.opencv.opencv_core.CvSize2D32f;
 
 import java.util.concurrent.Executor;
 
+import io.reactivex.rxjava3.core.Observable;
+
 @LayoutSpec
 public class RoiScreenSpec {
 
@@ -43,7 +46,6 @@ public class RoiScreenSpec {
     static Component onCreateLayout(ComponentContext c,
                                     @Prop Bitmap bitmap,
                                     @State ROI roi,
-                                    @State Bitmap mark,
                                     @State int method) {
         return Column.create(c)
                 .child(Title.create(c)
@@ -88,11 +90,6 @@ public class RoiScreenSpec {
                                 .radiusPx(Ui.getPx(R.dimen.modal_loader_size))
                                 .build())
                         .build() : null)
-                .child(mark == null ? null :
-                        Image.create(c)
-                                .drawable(new BitmapDrawable(c.getResources(), mark))
-                                .scaleType(ImageView.ScaleType.FIT_CENTER)
-                                .build())
                 .child(Image.create(c)
                         .background(Ui.circle(R.color.colorPrimaryDark))
                         .paddingRes(YogaEdge.ALL, R.dimen.ident)
@@ -118,25 +115,19 @@ public class RoiScreenSpec {
     @OnDetached
     static void onDetached(ComponentContext c, @State ROI roi) {
         if (roi != null) {
-            roi.recycle();
+            Ui.post(roi::recycle);
         }
     }
 
     @OnUpdateState
-    static void setRoiPolygon(StateValue<ROI> roi,
-                              StateValue<Bitmap> mark,
-                              @Param ROI newRoi,
-                              @Param Bitmap newMark) {
-        if (roi.get() != null) {
-            roi.get().recycle();
-        }
-
-        if (mark.get() != null) {
-            mark.get().recycle();
-        }
-
+    static void setRoi(StateValue<ROI> roi,
+                       @Param ROI newRoi) {
+        ROI prevRoi = roi.get();
         roi.set(newRoi);
-        mark.set(newMark);
+
+        if (prevRoi != null) {
+            Ui.post(prevRoi::recycle);
+        }
     }
 
     @OnUpdateState
@@ -164,9 +155,7 @@ public class RoiScreenSpec {
     private static void updateRoi(ComponentContext c, Executor executor, Bitmap bitmap, int method) {
         executor.execute(() -> {
             ROI roi = ROICalculator.calculate(bitmap, method);
-            CvSize2D32f size = roi.box.size();
-            RoiScreen.setRoiPolygon(c, roi,
-                    Ui.createMark((int) size.width(), (int) size.height()));
+            RoiScreen.setRoi(c, roi);
         });
     }
 }

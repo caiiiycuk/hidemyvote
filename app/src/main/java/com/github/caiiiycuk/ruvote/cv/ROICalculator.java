@@ -1,10 +1,14 @@
 package com.github.caiiiycuk.ruvote.cv;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
+
+import com.github.caiiiycuk.ruvote.BuildConfig;
+import com.github.caiiiycuk.ruvote.ui.Ui;
 
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacv.AndroidFrameConverter;
@@ -12,25 +16,18 @@ import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.opencv.opencv_core.CvBox2D;
 import org.bytedeco.opencv.opencv_core.CvContour;
-import org.bytedeco.opencv.opencv_core.CvMat;
 import org.bytedeco.opencv.opencv_core.CvMemStorage;
-import org.bytedeco.opencv.opencv_core.CvPoint;
+import org.bytedeco.opencv.opencv_core.CvPoint2D32f;
 import org.bytedeco.opencv.opencv_core.CvSeq;
+import org.bytedeco.opencv.opencv_core.CvSize2D32f;
 import org.bytedeco.opencv.opencv_core.IplImage;
-import org.bytedeco.opencv.opencv_core.Mat;
-import org.bytedeco.opencv.opencv_imgproc.CvFont;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.bytedeco.opencv.global.opencv_core.cvBox2D;
 import static org.bytedeco.opencv.global.opencv_core.cvClearMemStorage;
-import static org.bytedeco.opencv.global.opencv_core.cvCloneImage;
 import static org.bytedeco.opencv.global.opencv_core.cvCopy;
 import static org.bytedeco.opencv.global.opencv_core.cvCreateImage;
 import static org.bytedeco.opencv.global.opencv_core.cvCreateMemStorage;
 import static org.bytedeco.opencv.global.opencv_core.cvFlip;
-import static org.bytedeco.opencv.global.opencv_core.cvGetSeqElem;
 import static org.bytedeco.opencv.global.opencv_core.cvMat;
 import static org.bytedeco.opencv.global.opencv_core.cvNot;
 import static org.bytedeco.opencv.global.opencv_core.cvPoint;
@@ -41,25 +38,18 @@ import static org.bytedeco.opencv.global.opencv_core.cvSetIdentity;
 import static org.bytedeco.opencv.global.opencv_core.cvSize;
 import static org.bytedeco.opencv.global.opencv_core.cvXor;
 import static org.bytedeco.opencv.global.opencv_imgproc.COLOR_GRAY2BGR565;
-import static org.bytedeco.opencv.global.opencv_imgproc.CV_AA;
 import static org.bytedeco.opencv.global.opencv_imgproc.CV_ADAPTIVE_THRESH_GAUSSIAN_C;
 import static org.bytedeco.opencv.global.opencv_imgproc.CV_CHAIN_APPROX_SIMPLE;
 import static org.bytedeco.opencv.global.opencv_imgproc.CV_CLOCKWISE;
-import static org.bytedeco.opencv.global.opencv_imgproc.CV_FONT_HERSHEY_SIMPLEX;
 import static org.bytedeco.opencv.global.opencv_imgproc.CV_POLY_APPROX_DP;
 import static org.bytedeco.opencv.global.opencv_imgproc.CV_RETR_LIST;
-import static org.bytedeco.opencv.global.opencv_imgproc.CV_RGB2GRAY;
 import static org.bytedeco.opencv.global.opencv_imgproc.COLOR_BGR5652GRAY;
-import static org.bytedeco.opencv.global.opencv_imgproc.CV_RGBA2GRAY;
 import static org.bytedeco.opencv.global.opencv_imgproc.CV_THRESH_BINARY;
-import static org.bytedeco.opencv.global.opencv_imgproc.CV_THRESH_BINARY_INV;
 import static org.bytedeco.opencv.global.opencv_imgproc.cv2DRotationMatrix;
 import static org.bytedeco.opencv.global.opencv_imgproc.cvAdaptiveThreshold;
 import static org.bytedeco.opencv.global.opencv_imgproc.cvApproxPoly;
 import static org.bytedeco.opencv.global.opencv_imgproc.cvCanny;
-import static org.bytedeco.opencv.global.opencv_imgproc.cvCheckContourConvexity;
 import static org.bytedeco.opencv.global.opencv_imgproc.cvContourArea;
-import static org.bytedeco.opencv.global.opencv_imgproc.cvContourPerimeter;
 import static org.bytedeco.opencv.global.opencv_imgproc.cvConvexHull2;
 import static org.bytedeco.opencv.global.opencv_imgproc.cvCvtColor;
 import static org.bytedeco.opencv.global.opencv_imgproc.cvDilate;
@@ -70,19 +60,19 @@ import static org.bytedeco.opencv.global.opencv_imgproc.cvErode;
 import static org.bytedeco.opencv.global.opencv_imgproc.cvFillConvexPoly;
 import static org.bytedeco.opencv.global.opencv_imgproc.cvFindContours;
 import static org.bytedeco.opencv.global.opencv_imgproc.cvFont;
+import static org.bytedeco.opencv.global.opencv_imgproc.cvLine;
 import static org.bytedeco.opencv.global.opencv_imgproc.cvMinAreaRect2;
+import static org.bytedeco.opencv.global.opencv_imgproc.cvMinEnclosingCircle;
 import static org.bytedeco.opencv.global.opencv_imgproc.cvPointPolygonTest;
 import static org.bytedeco.opencv.global.opencv_imgproc.cvPolyLine;
 import static org.bytedeco.opencv.global.opencv_imgproc.cvPutText;
 import static org.bytedeco.opencv.global.opencv_imgproc.cvPyrDown;
 import static org.bytedeco.opencv.global.opencv_imgproc.cvPyrUp;
-import static org.bytedeco.opencv.global.opencv_imgproc.cvThreshold;
 import static org.bytedeco.opencv.global.opencv_imgproc.cvWarpAffine;
 import static org.bytedeco.opencv.global.opencv_imgproc.pointPolygonTest;
 import static org.bytedeco.opencv.helper.opencv_core.CV_RGB;
 import static org.bytedeco.opencv.helper.opencv_imgcodecs.cvLoadImage;
 import static org.bytedeco.opencv.helper.opencv_imgcodecs.cvSaveImage;
-import static org.opencv.core.Core.split;
 
 public class ROICalculator {
 
@@ -96,41 +86,22 @@ public class ROICalculator {
     @NonNull
     @WorkerThread
     public static ROI calculate(Bitmap bitmap, int method) {
-        AndroidFrameConverter androidFrameConverter = new AndroidFrameConverter();
-        OpenCVFrameConverter.ToIplImage iplConverter = new OpenCVFrameConverter.ToIplImage();
-
-        float[] roiPoint = new float[] {bitmap.getWidth() / 2, bitmap.getHeight() / 2};
+        float[] roiPoint = new float[]{bitmap.getWidth() / 2, bitmap.getHeight() / 2};
         float roiEpsilon = bitmap.getWidth() * 0.05f;
         float roiMinArea = (float) ((bitmap.getWidth() * bitmap.getHeight()) * Math.pow(0.05f, 2));
         float roiMaxArea = (float) (bitmap.getWidth() * bitmap.getHeight() * Math.pow(0.5f, 2));
 
-
         CvMemStorage storage = cvCreateMemStorage(0);
-        Frame frame = androidFrameConverter.convert(bitmap);
-        IplImage src = iplConverter.convert(frame);
-        IplImage gray = cvCreateImage(src.cvSize(), 8, 1);
-        IplImage sampler = cvCreateImage(cvSize(gray.width() / 2, gray.height() / 2), 8, 1);
-        IplImage polygons = cvCreateImage(src.cvSize(), 8, 2);
 
-        cvCvtColor(src, gray, COLOR_BGR5652GRAY);
-        cvPyrDown(gray, sampler, 7);
-        cvPyrUp(sampler, gray, 7);
+        IplImage grayImage = convert2Gray(bitmap);
+        IplImage outImage = cvCreateImage(grayImage.cvSize(), 8, 2);
 
-        if (method == METHOD_SOFT) {
-            cvAdaptiveThreshold(gray, gray, 255, CV_ADAPTIVE_THRESH_GAUSSIAN_C, CV_THRESH_BINARY, 11, 2);
-            cvCanny(gray, gray, 0, 50, 5);
-            cvDilate(gray, gray, null, 1);
-        } else {
-            cvDilate(gray, gray, null, 5);
-            cvAdaptiveThreshold(gray, gray, 255, CV_ADAPTIVE_THRESH_GAUSSIAN_C, CV_THRESH_BINARY, 11, 2);
-            cvCanny(gray, gray, 0, 50, 5);
-            cvDilate(gray, gray, null, 1);
-        }
-
-        cvCvtColor(gray, polygons, COLOR_GRAY2BGR565);
+        removeNoiseUsingPyrSampler(grayImage);
+        applyThresholdUsing(grayImage, method);
+        cvCvtColor(grayImage, outImage, COLOR_GRAY2BGR565);
 
         CvSeq contours = new CvSeq();
-        cvFindContours(gray, storage, contours,
+        cvFindContours(grayImage, storage, contours,
                 Loader.sizeof(CvContour.class), CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE,
                 cvPoint(0, 0));
 
@@ -153,15 +124,17 @@ public class ROICalculator {
                 selectedDistance = distance;
             }
 
-            cvDrawContours(polygons, polygon, CV_RGB(0, 200, 128),
-                    CV_RGB(255, 255, 255), 0, 2, 4);
+            if (BuildConfig.DEBUG) {
+                cvDrawContours(outImage, polygon, CV_RGB(0, 200, 128),
+                        CV_RGB(255, 255, 255), 0, 2, 4);
+            }
 
             contours = contours.h_next();
         }
 
         CvBox2D roiBox;
         if (selected != null) {
-            cvDrawContours(polygons, selected, CV_RGB(0, 255, 0),
+            cvDrawContours(outImage, selected, CV_RGB(0, 255, 0),
                     CV_RGB(255, 255, 255), 0, 4, 4);
 
             roiBox = cvMinAreaRect2(selected);
@@ -169,17 +142,73 @@ public class ROICalculator {
             roiBox = cvBox2D();
         }
 
-        cvNot(polygons, polygons);
+        cvNot(outImage, outImage);
 
-        Frame outFrame = iplConverter.convert(polygons);
-        Bitmap outBitmap = androidFrameConverter.convert(outFrame);
+        CvPoint2D32f center = roiBox.center();
+        CvSize2D32f size = roiBox.size();
 
-        cvReleaseImage(src);
-        cvReleaseImage(sampler);
-        cvReleaseImage(gray);
-        cvReleaseImage(polygons);
+        float x = center.x();
+        float y = center.y();
+        float width = size.width();
+        float height = size.height();
+        int angle = ((int) roiBox.angle() % 90);
+        angle = angle < 0 ? angle + 90 : angle;
+        angle = Math.min(angle, 90 - angle);
+
+        Bitmap outBitmap = convert2Bitmap(outImage);
+        cvReleaseImage(outImage);
+        cvReleaseImage(grayImage);
         cvClearMemStorage(storage);
 
-        return new ROI(outBitmap, roiBox);
+        Bitmap roiMark = Ui.createMark((int) width, (int) height, angle);
+        Canvas canvas = new Canvas(outBitmap);
+        canvas.drawBitmap(roiMark,
+                x - width / 2,
+                y - height / 2,
+                new Paint());
+
+        return new ROI(outBitmap);
+    }
+
+    private static IplImage convert2Gray(Bitmap bitmap) {
+        AndroidFrameConverter androidFrameConverter = new AndroidFrameConverter();
+        OpenCVFrameConverter.ToIplImage iplConverter = new OpenCVFrameConverter.ToIplImage();
+        Frame frame = androidFrameConverter.convert(bitmap);
+
+        IplImage src = iplConverter.convert(frame);
+        IplImage gray = cvCreateImage(src.cvSize(), 8, 1);
+        cvCvtColor(src, gray, COLOR_BGR5652GRAY);
+//        @caiiiyck: I think that androidFrameConverter used native bytes of bitmap,
+//        and trying to release it results in native crash
+//        cvReleaseImage(src);
+
+        return gray;
+    }
+
+    private static void removeNoiseUsingPyrSampler(IplImage gray) {
+        IplImage sampler = cvCreateImage(cvSize(gray.width() / 2, gray.height() / 2), 8, 1);
+        cvPyrDown(gray, sampler, 7);
+        cvPyrUp(sampler, gray, 7);
+        cvReleaseImage(sampler);
+    }
+
+    private static void applyThresholdUsing(IplImage gray, int method) {
+        if (method == METHOD_SOFT) {
+            cvAdaptiveThreshold(gray, gray, 255, CV_ADAPTIVE_THRESH_GAUSSIAN_C, CV_THRESH_BINARY, 11, 2);
+            cvCanny(gray, gray, 0, 50, 5);
+            cvDilate(gray, gray, null, 1);
+        } else {
+            cvDilate(gray, gray, null, 5);
+            cvAdaptiveThreshold(gray, gray, 255, CV_ADAPTIVE_THRESH_GAUSSIAN_C, CV_THRESH_BINARY, 11, 2);
+            cvCanny(gray, gray, 0, 50, 5);
+            cvDilate(gray, gray, null, 1);
+        }
+    }
+
+    private static Bitmap convert2Bitmap(IplImage outImage) {
+        AndroidFrameConverter androidFrameConverter = new AndroidFrameConverter();
+        OpenCVFrameConverter.ToIplImage iplConverter = new OpenCVFrameConverter.ToIplImage();
+        Frame outFrame = iplConverter.convert(outImage);
+        return androidFrameConverter.convert(outFrame);
     }
 }

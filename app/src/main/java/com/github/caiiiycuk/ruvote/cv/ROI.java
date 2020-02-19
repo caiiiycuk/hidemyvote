@@ -6,11 +6,9 @@ import org.bytedeco.opencv.opencv_core.CvBox2D;
 
 public class ROI {
     public final Bitmap bitmap;
-    public final CvBox2D box;
 
-    public ROI(Bitmap bitmap, CvBox2D box) {
+    public ROI(Bitmap bitmap) {
         this.bitmap = bitmap;
-        this.box = box;
     }
 
     public void recycle() {

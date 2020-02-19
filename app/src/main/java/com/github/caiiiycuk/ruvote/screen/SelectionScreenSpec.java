@@ -1,6 +1,7 @@
 package com.github.caiiiycuk.ruvote.screen;
 
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.MotionEvent;
 import android.widget.ImageView;
@@ -22,6 +23,7 @@ import com.facebook.litho.annotations.State;
 import com.facebook.litho.widget.Image;
 import com.github.caiiiycuk.ruvote.R;
 import com.github.caiiiycuk.ruvote.activity.Router;
+import com.github.caiiiycuk.ruvote.ui.Ui;
 import com.github.caiiiycuk.ruvote.ui.widget.Title;
 
 @LayoutSpec
@@ -38,7 +40,7 @@ public class SelectionScreenSpec {
                         .build())
                 .child(Image.create(c)
                         .flexGrow(1)
-                        .scaleType(ImageView.ScaleType.FIT_XY)
+                        .scaleType(ImageView.ScaleType.FIT_CENTER)
                         .drawable(new BitmapDrawable(c.getResources(), bitmap))
                         .touchHandler(SelectionScreen.onClick(c))
                         .visibilityChangedHandler(SelectionScreen.onComponentVisibilityChanged(c))
@@ -55,14 +57,8 @@ public class SelectionScreenSpec {
         if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
             float x = motionEvent.getAxisValue(MotionEvent.AXIS_X);
             float y = motionEvent.getAxisValue(MotionEvent.AXIS_Y);
-
-            float bWidth = bitmap.getWidth();
-            float bHeight = bitmap.getHeight();
-
-            float scaleX = bWidth / width;
-            float scaleY = bHeight / height;
-
-            router.openRoiActivity((int) (x * scaleX), (int) (y * scaleY));
+            Point bitmapPoint = Ui.mapFitCenterImagePointToBitmapPoint(x, y, width, height, bitmap);
+            router.openRoiActivity(bitmapPoint.x, bitmapPoint.y);
         }
 
         return true;
