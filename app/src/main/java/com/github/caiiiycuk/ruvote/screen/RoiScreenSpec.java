@@ -27,17 +27,14 @@ import com.facebook.yoga.YogaEdge;
 import com.facebook.yoga.YogaJustify;
 import com.facebook.yoga.YogaPositionType;
 import com.github.caiiiycuk.ruvote.R;
+import com.github.caiiiycuk.ruvote.activity.Router;
 import com.github.caiiiycuk.ruvote.cv.ROI;
 import com.github.caiiiycuk.ruvote.cv.ROICalculator;
 import com.github.caiiiycuk.ruvote.ui.Ui;
 import com.github.caiiiycuk.ruvote.ui.widget.ProgressWheel;
 import com.github.caiiiycuk.ruvote.ui.widget.Title;
 
-import org.bytedeco.opencv.opencv_core.CvSize2D32f;
-
 import java.util.concurrent.Executor;
-
-import io.reactivex.rxjava3.core.Observable;
 
 @LayoutSpec
 public class RoiScreenSpec {
@@ -100,6 +97,7 @@ public class RoiScreenSpec {
                         .positionType(YogaPositionType.ABSOLUTE)
                         .positionPercent(YogaEdge.RIGHT, 10)
                         .positionPercent(YogaEdge.BOTTOM, 10)
+                        .clickHandler(RoiScreen.onForwardClick(c))
                         .build())
                 .build();
     }
@@ -157,5 +155,17 @@ public class RoiScreenSpec {
             ROI roi = ROICalculator.calculate(bitmap, method);
             RoiScreen.setRoi(c, roi);
         });
+    }
+
+    @OnEvent(ClickEvent.class)
+    static void onForwardClick(ComponentContext c,
+                               @State ROI roi,
+                               @Prop int offsetX,
+                               @Prop int offsetY,
+                               @Prop Router router) {
+        router.openResultActivity((int) (offsetX + roi.left),
+                (int) (offsetY + roi.top),
+                roi.color,
+                roi.roiMark);
     }
 }

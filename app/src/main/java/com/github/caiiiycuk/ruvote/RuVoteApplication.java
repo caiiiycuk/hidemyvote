@@ -20,6 +20,9 @@ public class RuVoteApplication extends Application {
     @Nullable
     private static Bitmap currentBitmap;
 
+    @Nullable
+    private static Bitmap currentRoiMark;
+
     public static Context getContext() {
         return instance.getApplicationContext();
     }
@@ -29,20 +32,34 @@ public class RuVoteApplication extends Application {
         return currentBitmap;
     }
 
+    @Nullable
+    public static Bitmap getCurrentRoiMark() {
+        return currentRoiMark;
+    }
+
     public static void setCurrentBitmap(@Nullable Bitmap bitmap) {
         Bitmap prevBitmap = RuVoteApplication.currentBitmap;
-        if (prevBitmap != null) {
-            prevBitmap.recycle();
-        }
 
         if (bitmap == null) {
             RuVoteApplication.currentBitmap = null;
-            return;
+        } else {
+            Bitmap rgb565 = bitmap.copy(Bitmap.Config.RGB_565, false);
+            bitmap.recycle();
+            RuVoteApplication.currentBitmap = rgb565;
         }
 
-        Bitmap rgb565 = bitmap.copy(Bitmap.Config.RGB_565, false);
-        bitmap.recycle();
-        RuVoteApplication.currentBitmap = rgb565;
+        if (prevBitmap != null) {
+            prevBitmap.recycle();
+        }
+    }
+
+    public static void setCurrentRoiMark(@Nullable Bitmap currentRoiMark) {
+        Bitmap prevRoiMark = RuVoteApplication.currentRoiMark;
+        RuVoteApplication.currentRoiMark = currentRoiMark;
+
+        if (prevRoiMark != null) {
+            prevRoiMark.recycle();
+        }
     }
 
     @Override

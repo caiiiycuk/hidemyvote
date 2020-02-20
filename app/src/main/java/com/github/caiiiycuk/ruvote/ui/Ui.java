@@ -131,10 +131,17 @@ public class Ui {
             size = size * width / measuredWidth;
         }
 
-        textPaint.setTextSize(size);
         canvas.rotate(angle, width / 2, height / 2);
-        canvas.drawText(text, 0, text.length(), width / 2,
-                height / 2 - (textPaint.descent() + textPaint.ascent()) / 2, textPaint);
+
+        textPaint.setTextSize(size);
+
+        float x = width / 2;
+        float y = height / 2 - (textPaint.descent() + textPaint.ascent()) / 2;
+
+        for (int i = 0; i < 10; ++i) {
+            canvas.drawText(text, 0, text.length(), x + i, y + i, textPaint);
+        }
+
         return bitmap;
     }
 

@@ -1,13 +1,15 @@
 package com.github.caiiiycuk.ruvote.di;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.github.caiiiycuk.ruvote.Params;
 import com.github.caiiiycuk.ruvote.activity.Router;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -20,9 +22,15 @@ public class ActivityModule {
     @Nullable
     private final Bitmap bitmap;
 
-    public ActivityModule(@NonNull Activity activity, @Nullable Bitmap bitmap) {
+    @Nullable
+    private final Bitmap roiMark;
+
+    public ActivityModule(@NonNull Activity activity,
+                          @Nullable Bitmap bitmap,
+                          @Nullable Bitmap roiMark) {
         this.activity = activity;
         this.bitmap = bitmap;
+        this.roiMark = roiMark;
     }
 
     @NonNull
@@ -35,8 +43,17 @@ public class ActivityModule {
     @NonNull
     @Provides
     @ActivityScope
+    @Named(Params.BITMAP)
     public Bitmap bitmap() {
         return bitmap;
+    }
+
+    @NonNull
+    @Provides
+    @ActivityScope
+    @Named(Params.ROIMARK)
+    public Bitmap roiMark() {
+        return roiMark;
     }
 
     @Provides

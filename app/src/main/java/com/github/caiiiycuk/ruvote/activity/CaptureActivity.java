@@ -43,7 +43,10 @@ import javax.inject.Inject;
 
 public class CaptureActivity extends AppCompatActivity implements LifecycleOwner {
     private static int REQUEST_CODE_PERMISSIONS = 10;
-    private static String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA};
+    private static String[] REQUIRED_PERMISSIONS = new String[]{
+            Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
     private TextureView cameraView;
 

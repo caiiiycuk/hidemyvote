@@ -10,6 +10,7 @@ import androidx.annotation.WorkerThread;
 import com.github.caiiiycuk.ruvote.BuildConfig;
 import com.github.caiiiycuk.ruvote.ui.Ui;
 
+import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacv.AndroidFrameConverter;
 import org.bytedeco.javacv.Frame;
@@ -17,17 +18,20 @@ import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.opencv.opencv_core.CvBox2D;
 import org.bytedeco.opencv.opencv_core.CvContour;
 import org.bytedeco.opencv.opencv_core.CvMemStorage;
+import org.bytedeco.opencv.opencv_core.CvPoint;
 import org.bytedeco.opencv.opencv_core.CvPoint2D32f;
 import org.bytedeco.opencv.opencv_core.CvSeq;
 import org.bytedeco.opencv.opencv_core.CvSize2D32f;
 import org.bytedeco.opencv.opencv_core.IplImage;
 
+import static org.bytedeco.opencv.global.opencv_core.cvAvg;
 import static org.bytedeco.opencv.global.opencv_core.cvBox2D;
 import static org.bytedeco.opencv.global.opencv_core.cvClearMemStorage;
 import static org.bytedeco.opencv.global.opencv_core.cvCopy;
 import static org.bytedeco.opencv.global.opencv_core.cvCreateImage;
 import static org.bytedeco.opencv.global.opencv_core.cvCreateMemStorage;
 import static org.bytedeco.opencv.global.opencv_core.cvFlip;
+import static org.bytedeco.opencv.global.opencv_core.cvGetSeqElem;
 import static org.bytedeco.opencv.global.opencv_core.cvMat;
 import static org.bytedeco.opencv.global.opencv_core.cvNot;
 import static org.bytedeco.opencv.global.opencv_core.cvPoint;
@@ -133,10 +137,17 @@ public class ROICalculator {
         }
 
         CvBox2D roiBox;
+        int color = 0;
         if (selected != null) {
             cvDrawContours(outImage, selected, CV_RGB(0, 255, 0),
                     CV_RGB(255, 255, 255), 0, 4, 4);
-
+            float avgColor = 0;
+            for (int i = 0; i < selected.total(); ++i) {
+                CvPoint point = new CvPoint(cvGetSeqElem(selected, 1));
+                float pixelColor = bitmap.getPixel(point.x(), point.y());
+                avgColor += pixelColor / selected.total();
+            }
+            color = (int) avgColor;
             roiBox = cvMinAreaRect2(selected);
         } else {
             roiBox = cvBox2D();
@@ -153,8 +164,8 @@ public class ROICalculator {
         float height = size.height();
         int angle = ((int) roiBox.angle() % 90);
         angle = angle < 0 ? angle + 90 : angle;
-        angle = Math.min(angle, 90 - angle);
-
+        float left = x - width / 2;
+        float top = y - height / 2;
         Bitmap outBitmap = convert2Bitmap(outImage);
         cvReleaseImage(outImage);
         cvReleaseImage(grayImage);
@@ -162,12 +173,9 @@ public class ROICalculator {
 
         Bitmap roiMark = Ui.createMark((int) width, (int) height, angle);
         Canvas canvas = new Canvas(outBitmap);
-        canvas.drawBitmap(roiMark,
-                x - width / 2,
-                y - height / 2,
-                new Paint());
+        canvas.drawBitmap(roiMark, left, top, new Paint());
 
-        return new ROI(outBitmap);
+        return new ROI(outBitmap, roiMark, left, top, color);
     }
 
     private static IplImage convert2Gray(Bitmap bitmap) {

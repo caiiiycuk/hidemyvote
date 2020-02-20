@@ -22,7 +22,9 @@ public class Injector {
 
         return DaggerActivityComponent.builder()
                 .applicationComponent(RuVoteApplication.getApplicationComponent())
-                .activityModule(new ActivityModule(activity, RuVoteApplication.getCurrentBitmap()))
+                .activityModule(new ActivityModule(activity,
+                        RuVoteApplication.getCurrentBitmap(),
+                        RuVoteApplication.getCurrentRoiMark()))
                 .build();
     }
 

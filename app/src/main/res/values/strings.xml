@@ -5,6 +5,7 @@
     <string name="unable_to_take_picture">Unable to take picture</string>
     <string name="tap_on_vote_box">2. Tap on vote box</string>
     <string name="select_method">3. Select method</string>
+    <string name="save_result">4. Save result</string>
     <string name="method_soft">SOFT</string>
     <string name="method_hard">HARD</string>
 </resources>

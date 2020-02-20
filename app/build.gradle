@@ -29,9 +29,9 @@ dependencies {
     testAnnotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
 
     implementation group: 'org.bytedeco', name: 'javacv', version: javacvVersion
-    implementation group: 'org.bytedeco', name: 'opencv', version: "4.1.2-$javacvVersion", classifier: 'android-x86'
-    implementation group: 'org.bytedeco', name: 'ffmpeg', version: "4.2.1-$javacvVersion", classifier: 'android-x86'
-    implementation group: 'org.bytedeco', name: 'openblas', version: "0.3.7-$javacvVersion", classifier: 'android-x86'
+    implementation group: 'org.bytedeco', name: 'opencv', version: "4.1.2-$javacvVersion", classifier: 'android-arm64'
+    implementation group: 'org.bytedeco', name: 'ffmpeg', version: "4.2.1-$javacvVersion", classifier: 'android-arm64'
+    implementation group: 'org.bytedeco', name: 'openblas', version: "0.3.7-$javacvVersion", classifier: 'android-arm64'
 
     implementation 'com.facebook.soloader:soloader:0.8.2'
     implementation "com.facebook.litho:litho-core:$lithoVersion"

@@ -3,6 +3,7 @@ package com.github.caiiiycuk.ruvote.di;
 import androidx.annotation.NonNull;
 
 import com.github.caiiiycuk.ruvote.activity.CaptureActivity;
+import com.github.caiiiycuk.ruvote.activity.ResultActivity;
 import com.github.caiiiycuk.ruvote.activity.RoiActivity;
 import com.github.caiiiycuk.ruvote.activity.SelectionActivity;
 
@@ -15,4 +16,6 @@ public interface ActivityComponent {
     void inject(@NonNull CaptureActivity captureActivity);
     void inject(@NonNull SelectionActivity selectionActivity);
     void inject(@NonNull RoiActivity roiActivity);
+    void inject(@NonNull ResultActivity resultActivity);
+
 }

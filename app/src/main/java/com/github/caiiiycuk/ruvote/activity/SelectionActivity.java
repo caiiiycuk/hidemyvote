@@ -8,15 +8,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.facebook.litho.ComponentContext;
 import com.facebook.litho.LithoView;
+import com.github.caiiiycuk.ruvote.Params;
 import com.github.caiiiycuk.ruvote.di.Injector;
 import com.github.caiiiycuk.ruvote.screen.SelectionScreen;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 public class SelectionActivity extends AppCompatActivity {
 
     @Inject
     @Nullable
+    @Named(Params.BITMAP)
     Bitmap bitmap;
 
     @Inject

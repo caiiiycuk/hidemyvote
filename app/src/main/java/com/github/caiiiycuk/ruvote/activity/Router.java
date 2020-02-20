@@ -5,10 +5,12 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 
+import com.github.caiiiycuk.ruvote.Params;
 import com.github.caiiiycuk.ruvote.RuVoteApplication;
 
 public class Router {
@@ -37,6 +39,15 @@ public class Router {
         intent.putExtra(Params.X, x);
         intent.putExtra(Params.Y, y);
         startActivity(intent, RoiActivity.class);
+    }
+
+    public void openResultActivity(int x, int y, @ColorInt int color, Bitmap roiMark) {
+        Intent intent = new Intent();
+        intent.putExtra(Params.X, x);
+        intent.putExtra(Params.Y, y);
+        intent.putExtra(Params.COLOR, color);
+        RuVoteApplication.setCurrentRoiMark(roiMark);
+        startActivity(intent, ResultActivity.class);
     }
 
     private void startActivity(@NonNull Intent intent,
