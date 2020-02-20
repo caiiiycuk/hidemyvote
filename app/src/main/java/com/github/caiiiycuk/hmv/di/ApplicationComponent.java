@@ -1,6 +1,11 @@
 package com.github.caiiiycuk.hmv.di;
 
+import com.facebook.litho.annotations.Param;
+import com.github.caiiiycuk.hmv.Params;
+
 import java.util.concurrent.Executor;
+
+import javax.inject.Named;
 
 import dagger.Component;
 
@@ -10,7 +15,11 @@ import dagger.Component;
 @ApplicationScope
 public interface ApplicationComponent {
 
+    @Named(Params.ROI_SIZE_PERCENT)
     int roiSizePercent();
+
+    @Named(Params.BITMAP_HEIGHT)
+    int bitmapHeight();
 
     Executor executor();
 

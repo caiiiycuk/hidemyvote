@@ -23,9 +23,6 @@ import javax.inject.Named;
 public class ResultActivity extends AppCompatActivity {
 
     @Inject
-    int roiSizePercent;
-
-    @Inject
     @Nullable
     @Named(Params.BITMAP)
     Bitmap bitmap;
@@ -37,9 +34,6 @@ public class ResultActivity extends AppCompatActivity {
 
     @Inject
     Router router;
-
-    @Inject
-    Executor executor;
 
     private Bitmap resultBitmap;
 

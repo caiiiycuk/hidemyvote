@@ -20,6 +20,7 @@ import javax.inject.Named;
 public class RoiActivity extends AppCompatActivity {
 
     @Inject
+    @Named(Params.ROI_SIZE_PERCENT)
     int roiSizePercent;
 
     @Inject

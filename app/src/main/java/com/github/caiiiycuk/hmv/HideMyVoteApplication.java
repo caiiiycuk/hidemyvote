@@ -76,7 +76,6 @@ public class HideMyVoteApplication extends Application
         SoLoader.init(this, false);
 
         Ui.initFonts(this);
-        setCurrentBitmap(BitmapFactory.decodeResource(getResources(), R.raw.bb));
         applicationComponent = DaggerApplicationComponent.create();
 
         registerActivityLifecycleCallbacks(this);

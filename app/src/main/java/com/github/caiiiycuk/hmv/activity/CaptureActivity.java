@@ -30,6 +30,7 @@ import androidx.lifecycle.LifecycleOwner;
 import com.facebook.litho.ClickEvent;
 import com.facebook.litho.ComponentContext;
 import com.facebook.litho.LithoView;
+import com.github.caiiiycuk.hmv.Params;
 import com.github.caiiiycuk.hmv.R;
 import com.github.caiiiycuk.hmv.di.Injector;
 import com.github.caiiiycuk.hmv.screen.CaptureScreen;
@@ -39,6 +40,7 @@ import com.github.caiiiycuk.hmv.ui.UnScopedEventHandler;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 public class CaptureActivity extends AppCompatActivity implements LifecycleOwner {
     private static int REQUEST_CODE_PERMISSIONS = 10;
@@ -56,6 +58,10 @@ public class CaptureActivity extends AppCompatActivity implements LifecycleOwner
 
     @Inject
     Executor executor;
+
+    @Inject
+    @Named(Params.BITMAP_HEIGHT)
+    int bitmapHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,11 +96,13 @@ public class CaptureActivity extends AppCompatActivity implements LifecycleOwner
         Point screenSize = new Point();
         getWindowManager().getDefaultDisplay().getSize(screenSize);
 
-        Size cameraSize = new Size(screenSize.x,
+        Size previewSize = new Size(screenSize.x,
                 screenSize.y - Ui.getPx(R.dimen.title_height));
+        Size targetSize = new Size(bitmapHeight * previewSize.getWidth() / previewSize.getHeight(),
+                bitmapHeight);
 
         PreviewConfig previewConfig = new PreviewConfig.Builder()
-                .setTargetResolution(cameraSize)
+                .setTargetResolution(previewSize)
                 .build();
 
         Preview preview = new Preview(previewConfig);
@@ -110,7 +118,7 @@ public class CaptureActivity extends AppCompatActivity implements LifecycleOwner
 
         ImageCaptureConfig imageCaptureConfig = new ImageCaptureConfig.Builder()
                 .setCaptureMode(ImageCapture.CaptureMode.MAX_QUALITY)
-                .setTargetResolution(cameraSize)
+                .setTargetResolution(targetSize)
                 .build();
 
         imageCapture = new ImageCapture(imageCaptureConfig);
