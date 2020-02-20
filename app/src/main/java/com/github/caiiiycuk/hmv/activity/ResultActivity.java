@@ -67,6 +67,7 @@ public class ResultActivity extends AppCompatActivity {
         ComponentContext c = new ComponentContext(this);
         LithoView view = LithoView.create(this, ResultScreen.create(c)
                 .bitmap(resultBitmap)
+                .router(router)
                 .build());
 
         setContentView(view);

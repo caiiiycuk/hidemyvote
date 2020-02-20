@@ -26,8 +26,8 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.facebook.litho.drawable.ComparableDrawableWrapper;
-import com.github.caiiiycuk.hmv.R;
 import com.github.caiiiycuk.hmv.HideMyVoteApplication;
+import com.github.caiiiycuk.hmv.R;
 
 import java.nio.ByteBuffer;
 import java.util.Random;

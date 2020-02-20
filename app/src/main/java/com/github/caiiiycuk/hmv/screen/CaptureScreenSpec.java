@@ -25,6 +25,8 @@ import com.facebook.yoga.YogaEdge;
 import com.facebook.yoga.YogaPositionType;
 import com.github.caiiiycuk.hmv.R;
 import com.github.caiiiycuk.hmv.ui.Ui;
+import com.github.caiiiycuk.hmv.ui.widget.FAB;
+import com.github.caiiiycuk.hmv.ui.widget.FABSpec;
 import com.github.caiiiycuk.hmv.ui.widget.Title;
 
 @LayoutSpec(events = ClickEvent.class)
@@ -37,18 +39,11 @@ public class CaptureScreenSpec {
                 .child(Title.create(c)
                         .textRes(R.string.capture_title)
                         .build())
-                .child(Image.create(c)
+                .child(FAB.create(c)
+                        .align(FABSpec.RIGHT)
                         .scale(hidden ? 0.0f : 1.0f)
                         .transitionKey("fabScale")
-                        .background(Ui.circle(R.color.colorPrimaryDark))
-                        .paddingRes(YogaEdge.ALL, R.dimen.ident)
-                        .drawableRes(android.R.drawable.ic_menu_camera)
-                        .widthRes(R.dimen.icon_size)
-                        .aspectRatio(1.0f)
-                        .scaleType(ImageView.ScaleType.FIT_CENTER)
-                        .positionType(YogaPositionType.ABSOLUTE)
-                        .positionPercent(YogaEdge.RIGHT, 10)
-                        .positionPercent(YogaEdge.BOTTOM, 10)
+                        .drawableRes(R.drawable.camera)
                         .clickHandler(CaptureScreen.onFabClick(c))
                         .build())
                 .child(hidden ? Row.create(c)

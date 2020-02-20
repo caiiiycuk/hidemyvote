@@ -6,6 +6,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
+import com.facebook.litho.ClickEvent;
 import com.facebook.litho.Column;
 import com.facebook.litho.Component;
 import com.facebook.litho.ComponentContext;
@@ -24,6 +25,8 @@ import com.facebook.litho.widget.Image;
 import com.github.caiiiycuk.hmv.R;
 import com.github.caiiiycuk.hmv.activity.Router;
 import com.github.caiiiycuk.hmv.ui.Ui;
+import com.github.caiiiycuk.hmv.ui.widget.FAB;
+import com.github.caiiiycuk.hmv.ui.widget.FABSpec;
 import com.github.caiiiycuk.hmv.ui.widget.Title;
 
 @LayoutSpec
@@ -44,6 +47,11 @@ public class SelectionScreenSpec {
                         .drawable(new BitmapDrawable(c.getResources(), bitmap))
                         .touchHandler(SelectionScreen.onClick(c))
                         .visibilityChangedHandler(SelectionScreen.onComponentVisibilityChanged(c))
+                        .build())
+                .child(FAB.create(c)
+                        .drawableRes(R.drawable.back)
+                        .align(FABSpec.LEFT)
+                        .clickHandler(SelectionScreen.onBackClick(c))
                         .build())
                 .build();
     }
@@ -74,11 +82,16 @@ public class SelectionScreenSpec {
 
     @OnUpdateState
     static void setSize(StateValue<Integer> width, StateValue<Integer> height,
-                             @Param int newWidth, @Param int newHeight) {
+                        @Param int newWidth, @Param int newHeight) {
         if (newWidth != width.get() || newHeight != height.get()) {
             width.set(newWidth);
             height.set(newHeight);
         }
+    }
+
+    @OnEvent(ClickEvent.class)
+    static void onBackClick(ComponentContext c, @Prop Router router) {
+        router.back();
     }
 
 }

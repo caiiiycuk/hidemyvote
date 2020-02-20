@@ -30,6 +30,8 @@ import com.github.caiiiycuk.hmv.activity.Router;
 import com.github.caiiiycuk.hmv.cv.ROI;
 import com.github.caiiiycuk.hmv.cv.ROICalculator;
 import com.github.caiiiycuk.hmv.ui.Ui;
+import com.github.caiiiycuk.hmv.ui.widget.FAB;
+import com.github.caiiiycuk.hmv.ui.widget.FABSpec;
 import com.github.caiiiycuk.hmv.ui.widget.ProgressWheel;
 import com.github.caiiiycuk.hmv.ui.widget.Title;
 
@@ -86,16 +88,14 @@ public class RoiScreenSpec {
                                 .radiusPx(Ui.getPx(R.dimen.modal_loader_size))
                                 .build())
                         .build() : null)
-                .child(Image.create(c)
-                        .background(Ui.circle(R.color.colorPrimaryDark))
-                        .paddingRes(YogaEdge.ALL, R.dimen.ident)
-                        .drawableRes(android.R.drawable.ic_media_ff)
-                        .widthRes(R.dimen.icon_size)
-                        .aspectRatio(1.0f)
-                        .scaleType(ImageView.ScaleType.FIT_CENTER)
-                        .positionType(YogaPositionType.ABSOLUTE)
-                        .positionPercent(YogaEdge.RIGHT, 10)
-                        .positionPercent(YogaEdge.BOTTOM, 10)
+                .child(FAB.create(c)
+                        .align(FABSpec.LEFT)
+                        .drawableRes(R.drawable.back)
+                        .clickHandler(RoiScreen.onBackClick(c))
+                        .build())
+                .child(FAB.create(c)
+                        .align(FABSpec.RIGHT)
+                        .drawableRes(R.drawable.done)
                         .clickHandler(RoiScreen.onForwardClick(c))
                         .build())
                 .build();
@@ -154,6 +154,11 @@ public class RoiScreenSpec {
             ROI roi = ROICalculator.calculate(bitmap, method);
             RoiScreen.setRoi(c, roi);
         });
+    }
+
+    @OnEvent(ClickEvent.class)
+    static void onBackClick(ComponentContext c, @Prop Router router) {
+        router.back();
     }
 
     @OnEvent(ClickEvent.class)

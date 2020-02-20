@@ -23,7 +23,10 @@ import com.facebook.litho.widget.Image;
 import com.facebook.yoga.YogaEdge;
 import com.facebook.yoga.YogaPositionType;
 import com.github.caiiiycuk.hmv.R;
+import com.github.caiiiycuk.hmv.activity.Router;
 import com.github.caiiiycuk.hmv.ui.Ui;
+import com.github.caiiiycuk.hmv.ui.widget.FAB;
+import com.github.caiiiycuk.hmv.ui.widget.FABSpec;
 import com.github.caiiiycuk.hmv.ui.widget.Title;
 
 import java.io.File;
@@ -37,23 +40,21 @@ public class ResultScreenSpec {
                                     @Prop Bitmap bitmap) {
         return Column.create(c)
                 .child(Title.create(c)
-                        .textRes(R.string.select_method)
+                        .textRes(R.string.save_result)
                         .build())
                 .child(Image.create(c)
                         .flexGrow(1)
                         .scaleType(ImageView.ScaleType.FIT_CENTER)
                         .drawable(new BitmapDrawable(c.getResources(), bitmap))
                         .build())
-                .child(Image.create(c)
-                        .background(Ui.circle(R.color.colorPrimaryDark))
-                        .paddingRes(YogaEdge.ALL, R.dimen.ident)
-                        .drawableRes(android.R.drawable.ic_media_ff)
-                        .widthRes(R.dimen.icon_size)
-                        .aspectRatio(1.0f)
-                        .scaleType(ImageView.ScaleType.FIT_CENTER)
-                        .positionType(YogaPositionType.ABSOLUTE)
-                        .positionPercent(YogaEdge.RIGHT, 10)
-                        .positionPercent(YogaEdge.BOTTOM, 10)
+                .child(FAB.create(c)
+                        .align(FABSpec.LEFT)
+                        .drawableRes(R.drawable.back)
+                        .clickHandler(ResultScreen.onBackClick(c))
+                        .build())
+                .child(FAB.create(c)
+                        .align(FABSpec.RIGHT)
+                        .drawableRes(R.drawable.share)
                         .clickHandler(ResultScreen.onShare(c))
                         .build())
                 .build();
@@ -83,6 +84,11 @@ public class ResultScreenSpec {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         ContextCompat.startActivity(context,
                 Intent.createChooser(intent, "Share"), null);
+    }
+
+    @OnEvent(ClickEvent.class)
+    static void onBackClick(ComponentContext c, @Prop Router router) {
+        router.back();
     }
 
 }

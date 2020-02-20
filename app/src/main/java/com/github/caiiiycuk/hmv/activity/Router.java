@@ -10,8 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 
-import com.github.caiiiycuk.hmv.Params;
 import com.github.caiiiycuk.hmv.HideMyVoteApplication;
+import com.github.caiiiycuk.hmv.Params;
+import com.github.caiiiycuk.hmv.screen.RoiScreen;
 
 public class Router {
 
@@ -58,4 +59,10 @@ public class Router {
         });
     }
 
+    public void back() {
+        activity.runOnUiThread(() -> {
+            activity.onBackPressed();
+            activity.finish();
+        });
+    }
 }
