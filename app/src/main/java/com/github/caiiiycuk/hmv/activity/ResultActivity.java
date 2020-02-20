@@ -1,8 +1,6 @@
 package com.github.caiiiycuk.hmv.activity;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.os.Bundle;
 
 import androidx.annotation.ColorInt;
@@ -14,8 +12,6 @@ import com.facebook.litho.LithoView;
 import com.github.caiiiycuk.hmv.Params;
 import com.github.caiiiycuk.hmv.di.Injector;
 import com.github.caiiiycuk.hmv.screen.ResultScreen;
-
-import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -35,8 +31,6 @@ public class ResultActivity extends AppCompatActivity {
     @Inject
     Router router;
 
-    private Bitmap resultBitmap;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,29 +46,17 @@ public class ResultActivity extends AppCompatActivity {
             return;
         }
 
-        resultBitmap = bitmap.copy(bitmap.getConfig(), true);
-        Canvas canvas = new Canvas(resultBitmap);
-        Paint paint = new Paint();
-//        paint.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(roiMark, x, y, paint);
 
         ComponentContext c = new ComponentContext(this);
         LithoView view = LithoView.create(this, ResultScreen.create(c)
-                .bitmap(resultBitmap)
+                .bitmap(bitmap)
+                .roiMark(roiMark)
                 .router(router)
+                .x(x)
+                .y(y)
                 .build());
 
         setContentView(view);
     }
-
-    @Override
-    protected void onStop() {
-        if (resultBitmap != null) {
-            resultBitmap.recycle();
-        }
-
-        super.onStop();
-    }
-
 
 }

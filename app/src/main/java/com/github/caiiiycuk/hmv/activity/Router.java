@@ -12,7 +12,6 @@ import androidx.core.app.ActivityCompat;
 
 import com.github.caiiiycuk.hmv.HideMyVoteApplication;
 import com.github.caiiiycuk.hmv.Params;
-import com.github.caiiiycuk.hmv.screen.RoiScreen;
 
 public class Router {
 

@@ -5,5 +5,12 @@
     <color name="colorSelected">#8FD9FF</color>
     <color name="colorAccent">#D81B60</color>
     <color name="neutralTextColor">#FFFFFF</color>
-    <color name="modalBackground">#33CCCCCC</color>
+    <color name="modalBackground">#77333333</color>
+
+    <color name="tintColor_1">#000000</color>
+    <color name="tintColor_2">#090909</color>
+    <color name="tintColor_3">#131313</color>
+    <color name="tintColor_4">#1A1A1A</color>
+    <color name="tintColor_5">#202020</color>
+    <color name="tintColor_6">#030F4C</color>
 </resources>

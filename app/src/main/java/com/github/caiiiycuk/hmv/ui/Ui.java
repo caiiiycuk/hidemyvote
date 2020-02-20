@@ -105,7 +105,7 @@ public class Ui {
         Paint textPaint = new Paint();
         textPaint.setAntiAlias(true);
         textPaint.setStyle(Paint.Style.FILL);
-        textPaint.setColor(Color.BLACK);
+        textPaint.setColor(Color.argb(128, 0, 0, 0));
         textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setTypeface(fonts[random.nextInt(fonts.length)]);
 

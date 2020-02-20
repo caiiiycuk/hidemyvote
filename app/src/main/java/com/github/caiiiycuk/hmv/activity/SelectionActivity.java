@@ -11,7 +11,6 @@ import com.facebook.litho.LithoView;
 import com.github.caiiiycuk.hmv.Params;
 import com.github.caiiiycuk.hmv.di.Injector;
 import com.github.caiiiycuk.hmv.screen.SelectionScreen;
-import com.github.caiiiycuk.hmv.ui.UnScopedEventHandler;
 
 import javax.inject.Inject;
 import javax.inject.Named;

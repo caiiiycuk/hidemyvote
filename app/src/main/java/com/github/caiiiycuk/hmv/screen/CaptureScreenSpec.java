@@ -1,15 +1,12 @@
 package com.github.caiiiycuk.hmv.screen;
 
-import android.graphics.Color;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.facebook.litho.ClickEvent;
 import com.facebook.litho.Column;
 import com.facebook.litho.Component;
 import com.facebook.litho.ComponentContext;
 import com.facebook.litho.EventHandler;
-import com.facebook.litho.Row;
 import com.facebook.litho.StateValue;
 import com.facebook.litho.Transition;
 import com.facebook.litho.animation.AnimatedProperties;
@@ -20,13 +17,10 @@ import com.facebook.litho.annotations.OnCreateTransition;
 import com.facebook.litho.annotations.OnEvent;
 import com.facebook.litho.annotations.OnUpdateState;
 import com.facebook.litho.annotations.State;
-import com.facebook.litho.widget.Image;
-import com.facebook.yoga.YogaEdge;
-import com.facebook.yoga.YogaPositionType;
 import com.github.caiiiycuk.hmv.R;
-import com.github.caiiiycuk.hmv.ui.Ui;
 import com.github.caiiiycuk.hmv.ui.widget.FAB;
 import com.github.caiiiycuk.hmv.ui.widget.FABSpec;
+import com.github.caiiiycuk.hmv.ui.widget.ModalLoading;
 import com.github.caiiiycuk.hmv.ui.widget.Title;
 
 @LayoutSpec(events = ClickEvent.class)
@@ -46,11 +40,7 @@ public class CaptureScreenSpec {
                         .drawableRes(R.drawable.camera)
                         .clickHandler(CaptureScreen.onFabClick(c))
                         .build())
-                .child(hidden ? Row.create(c)
-                        .backgroundColor(Color.argb(30, 0, 0, 0))
-                        .positionType(YogaPositionType.ABSOLUTE)
-                        .positionPx(YogaEdge.ALL, 0)
-                        .build() : null)
+                .child(hidden ? ModalLoading.create(c).build() : null)
                 .build();
     }
 

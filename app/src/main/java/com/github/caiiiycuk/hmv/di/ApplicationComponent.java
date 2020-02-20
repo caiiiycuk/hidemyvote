@@ -1,6 +1,5 @@
 package com.github.caiiiycuk.hmv.di;
 
-import com.facebook.litho.annotations.Param;
 import com.github.caiiiycuk.hmv.Params;
 
 import java.util.concurrent.Executor;

@@ -14,6 +14,8 @@ import com.facebook.litho.annotations.OnMeasure;
 import com.facebook.litho.annotations.OnMount;
 import com.facebook.litho.annotations.Prop;
 import com.facebook.litho.annotations.PropDefault;
+import com.github.caiiiycuk.hmv.R;
+import com.github.caiiiycuk.hmv.ui.Ui;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
 @MountSpec(isPureRender = true)
@@ -41,6 +43,7 @@ public class ProgressWheelSpec {
                         @Prop(optional = true) boolean spin) {
         progressWheel.setLinearProgress(linearProgress);
         progressWheel.setCircleRadius(radiusPx);
+        progressWheel.setBarColor(Ui.getColor(R.color.colorPrimary));
         if (spin) {
             progressWheel.spin();
         }

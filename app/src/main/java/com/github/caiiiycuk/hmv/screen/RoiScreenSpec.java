@@ -24,7 +24,6 @@ import com.facebook.litho.widget.Text;
 import com.facebook.yoga.YogaAlign;
 import com.facebook.yoga.YogaEdge;
 import com.facebook.yoga.YogaJustify;
-import com.facebook.yoga.YogaPositionType;
 import com.github.caiiiycuk.hmv.R;
 import com.github.caiiiycuk.hmv.activity.Router;
 import com.github.caiiiycuk.hmv.cv.ROI;
@@ -32,7 +31,7 @@ import com.github.caiiiycuk.hmv.cv.ROICalculator;
 import com.github.caiiiycuk.hmv.ui.Ui;
 import com.github.caiiiycuk.hmv.ui.widget.FAB;
 import com.github.caiiiycuk.hmv.ui.widget.FABSpec;
-import com.github.caiiiycuk.hmv.ui.widget.ProgressWheel;
+import com.github.caiiiycuk.hmv.ui.widget.ModalLoading;
 import com.github.caiiiycuk.hmv.ui.widget.Title;
 
 import java.util.concurrent.Executor;
@@ -78,16 +77,6 @@ public class RoiScreenSpec {
                         .drawable(new BitmapDrawable(c.getResources(),
                                 roi == null ? bitmap : roi.bitmap))
                         .build())
-                .child(roi == null ? Row.create(c)
-                        .backgroundRes(R.color.modalBackground)
-                        .positionType(YogaPositionType.ABSOLUTE)
-                        .positionPx(YogaEdge.ALL, 0)
-                        .justifyContent(YogaJustify.CENTER)
-                        .alignItems(YogaAlign.CENTER)
-                        .child(ProgressWheel.create(c)
-                                .radiusPx(Ui.getPx(R.dimen.modal_loader_size))
-                                .build())
-                        .build() : null)
                 .child(FAB.create(c)
                         .align(FABSpec.LEFT)
                         .drawableRes(R.drawable.back)
@@ -98,6 +87,7 @@ public class RoiScreenSpec {
                         .drawableRes(R.drawable.done)
                         .clickHandler(RoiScreen.onForwardClick(c))
                         .build())
+                .child(roi == null ? ModalLoading.create(c).build() : null)
                 .build();
     }
 
