@@ -1,2 +1,3 @@
-# ruvote
-Russian Vote App
+# Hide My Vote
+
+Source code of **Hide My Vote** applications
