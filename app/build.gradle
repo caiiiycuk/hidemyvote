@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply from: '../gpprivate/android.gradle'
 
 android {
     compileSdkVersion 29
@@ -11,10 +12,20 @@ android {
         versionName "1.10"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        release {
+            storeFile file('../gpprivate/' + project.keyStore)
+            storePassword project.keyPassword
+            keyAlias project.keyAlias
+            keyPassword project.keyPassword
+        }
+    }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
