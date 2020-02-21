@@ -25,7 +25,7 @@ public class ApplicationModule {
     @ApplicationScope
     @Named(Params.BITMAP_HEIGHT)
     public static int bitmapHeight() {
-        return 2560;
+        return 2048;
     }
 
     @Provides

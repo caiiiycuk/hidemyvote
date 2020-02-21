@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Hide My Vote</string>
+    <string name="app_name">My Vote</string>
     <string name="capture_title">01. Take screenshot</string>
     <string name="camera_permission">Unable to access camera, please check permissions</string>
     <string name="unable_to_take_picture">Unable to take picture</string>

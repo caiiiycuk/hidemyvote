@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.ColorRes;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import com.facebook.litho.ClickEvent;
 import com.facebook.litho.Column;
@@ -165,25 +166,32 @@ public class ResultScreenSpec {
 
     @OnEvent(ClickEvent.class)
     static void onShare(ComponentContext c,
-                        @Prop Bitmap bitmap) {
+                        @State Bitmap result) {
+        if (result == null) {
+            return;
+        }
+
         Context context = c.getAndroidContext();
         File picturesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         File targetFile = new File(picturesDir, "IMG_" + System.currentTimeMillis() + ".jpg");
         try {
             FileOutputStream out = new FileOutputStream(targetFile);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 65, out);
+            result.compress(Bitmap.CompressFormat.JPEG, 65, out);
             out.flush();
             out.close();
         } catch (Exception e) {
             Ui.post(() -> Toast.makeText(context, "Unable to save file: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             return;
         }
+        Uri uri = FileProvider.getUriForFile(context,
+                context.getApplicationContext().getPackageName() + ".provider",
+                targetFile);
 
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("image/jpg");
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + targetFile.getAbsolutePath()));
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         ContextCompat.startActivity(context,
                 Intent.createChooser(intent, "Share"), null);
