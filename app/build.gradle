@@ -8,8 +8,8 @@ android {
         applicationId "com.github.caiiiycuk.hma"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1100
-        versionName "1.10"
+        versionCode 1110
+        versionName "1.11"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
@@ -37,9 +37,17 @@ android {
         abi {
             enable true
             reset()
-            include 'x86', 'x86_64', 'arm64-v8a', 'armeabi-v7a'
+            include 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
             universalApk false
         }
+    }
+    // @caiiiycuk: splits does not work properly for javacv, using flavors instead
+    flavorDimensions "version"
+    productFlavors {
+        v7a {}
+        v8a {}
+        x86 {}
+        x86_64 {}
     }
 }
 
@@ -50,14 +58,14 @@ dependencies {
 
     implementation group: 'org.bytedeco', name: 'javacv', version: javacvVersion
 
-    implementation group: 'org.bytedeco', name: 'opencv', version: "4.1.2-$javacvVersion", classifier: 'android-arm'
-    implementation group: 'org.bytedeco', name: 'openblas', version: "0.3.7-$javacvVersion", classifier: 'android-arm'
-    implementation group: 'org.bytedeco', name: 'opencv', version: "4.1.2-$javacvVersion", classifier: 'android-arm64'
-    implementation group: 'org.bytedeco', name: 'openblas', version: "0.3.7-$javacvVersion", classifier: 'android-arm64'
-    implementation group: 'org.bytedeco', name: 'opencv', version: "4.1.2-$javacvVersion", classifier: 'android-x86'
-    implementation group: 'org.bytedeco', name: 'openblas', version: "0.3.7-$javacvVersion", classifier: 'android-x86'
-    implementation group: 'org.bytedeco', name: 'opencv', version: "4.1.2-$javacvVersion", classifier: 'android-x86_64'
-    implementation group: 'org.bytedeco', name: 'openblas', version: "0.3.7-$javacvVersion", classifier: 'android-x86_64'
+    v7aImplementation group: 'org.bytedeco', name: 'opencv', version: "4.1.2-$javacvVersion", classifier: 'android-arm'
+    v7aImplementation group: 'org.bytedeco', name: 'openblas', version: "0.3.7-$javacvVersion", classifier: 'android-arm'
+    v8aImplementation group: 'org.bytedeco', name: 'opencv', version: "4.1.2-$javacvVersion", classifier: 'android-arm64'
+    v8aImplementation group: 'org.bytedeco', name: 'openblas', version: "0.3.7-$javacvVersion", classifier: 'android-arm64'
+    x86Implementation group: 'org.bytedeco', name: 'opencv', version: "4.1.2-$javacvVersion", classifier: 'android-x86'
+    x86Implementation group: 'org.bytedeco', name: 'openblas', version: "0.3.7-$javacvVersion", classifier: 'android-x86'
+    x86_64Implementation group: 'org.bytedeco', name: 'opencv', version: "4.1.2-$javacvVersion", classifier: 'android-x86_64'
+    x86_64Implementation group: 'org.bytedeco', name: 'openblas', version: "0.3.7-$javacvVersion", classifier: 'android-x86_64'
 
     implementation 'com.facebook.soloader:soloader:0.8.2'
     implementation "com.facebook.litho:litho-core:$lithoVersion"
