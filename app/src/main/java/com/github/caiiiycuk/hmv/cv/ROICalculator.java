@@ -105,7 +105,7 @@ public class ROICalculator {
                 selectedDistance = distance;
             }
 
-            if (BuildConfig.DEBUG) {
+            if (BuildConfig.DEBUG && false) {
                 cvDrawContours(outImage, polygon, CV_RGB(0, 200, 128),
                         CV_RGB(255, 255, 255), 0, 2, 4);
             }

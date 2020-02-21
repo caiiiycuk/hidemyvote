@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Мой голос</string>
+    <string name="capture_title">01. Сфотографируйте</string>
+    <string name="camera_permission">Не удалось получить доступ, проверьте настройки</string>
+    <string name="unable_to_take_picture">Не удалось сфотографировать</string>
+    <string name="tap_on_vote_box">2. Выберите место под метку</string>
+    <string name="select_method">3. Предварительный результат</string>
+    <string name="save_result">4. Сохранить результат</string>
+    <string name="method_soft">ПРОСТОЙ</string>
+    <string name="method_hard">УСИЛЕННЫЙ</string>
+    <string name="share">Отправить</string>
+</resources>

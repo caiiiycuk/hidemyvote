@@ -193,8 +193,10 @@ public class ResultScreenSpec {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(Intent.EXTRA_STREAM, uri);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        CharSequence share = c.getAndroidContext().getResources().getText(R.string.share);
         ContextCompat.startActivity(context,
-                Intent.createChooser(intent, "Share"), null);
+                Intent.createChooser(intent,  share), null);
     }
 
     @OnEvent(ClickEvent.class)
