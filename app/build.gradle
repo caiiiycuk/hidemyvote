@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 apply from: '../gpprivate/android.gradle'
 
 android {
@@ -52,6 +53,8 @@ android {
 }
 
 dependencies {
+    implementation 'com.google.firebase:firebase-analytics:17.2.2'
+
     implementation "com.google.dagger:dagger:$daggerVersion"
     annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
     testAnnotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
