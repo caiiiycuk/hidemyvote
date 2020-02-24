@@ -34,6 +34,10 @@ import java.util.Random;
 
 public class Ui {
 
+    private static final String[] marks = new String[] {
+      "V", "v", "X", "x", "O", "o", "\\/"
+    };
+
     private static final Random random = new Random();
 
     private static Typeface[] fonts;
@@ -109,18 +113,7 @@ public class Ui {
         textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setTypeface(fonts[random.nextInt(fonts.length)]);
 
-        String text;
-        switch (random.nextInt(3)) {
-            case 0:
-                text = "V";
-                break;
-            case 1:
-                text = "v";
-                break;
-            default:
-                text = "\\/";
-                break;
-        }
+        String text = marks[random.nextInt(marks.length)];
 
         float size = height;
         textPaint.setTextSize(height);
