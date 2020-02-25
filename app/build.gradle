@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 apply from: '../gpprivate/android.gradle'
 
 android {
@@ -9,8 +10,8 @@ android {
         applicationId "com.github.caiiiycuk.hma"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1120
-        versionName "1.12"
+        versionCode 1140
+        versionName "1.14"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
@@ -54,6 +55,7 @@ android {
 
 dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    implementation 'com.google.firebase:firebase-crashlytics:17.0.0-beta01'
 
     implementation "com.google.dagger:dagger:$daggerVersion"
     annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
