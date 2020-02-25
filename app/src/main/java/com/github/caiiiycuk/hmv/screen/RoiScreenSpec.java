@@ -14,6 +14,7 @@ import com.facebook.litho.Row;
 import com.facebook.litho.StateValue;
 import com.facebook.litho.annotations.LayoutSpec;
 import com.facebook.litho.annotations.OnAttached;
+import com.facebook.litho.annotations.OnCreateInitialState;
 import com.facebook.litho.annotations.OnCreateLayout;
 import com.facebook.litho.annotations.OnDetached;
 import com.facebook.litho.annotations.OnEvent;
@@ -41,11 +42,17 @@ import java.util.concurrent.Executor;
 @LayoutSpec
 public class RoiScreenSpec {
 
+    @OnCreateInitialState
+    static void onCreateInitialState(ComponentContext c, StateValue<Boolean> modal) {
+        modal.set(true);
+    }
+
     @OnCreateLayout
     static Component onCreateLayout(ComponentContext c,
                                     @Prop Bitmap bitmap,
                                     @State ROI roi,
-                                    @State int method) {
+                                    @State int method,
+                                    @State boolean modal) {
         return Column.create(c)
                 .child(Title.create(c)
                         .textRes(R.string.select_method)
@@ -84,12 +91,12 @@ public class RoiScreenSpec {
                         .drawableRes(R.drawable.back)
                         .clickHandler(RoiScreen.onBackClick(c))
                         .build())
-                .child(FAB.create(c)
+                .child(roi == null ? null : FAB.create(c)
                         .align(FABSpec.RIGHT)
                         .drawableRes(R.drawable.done)
                         .clickHandler(RoiScreen.onForwardClick(c))
                         .build())
-                .child(roi == null ? ModalLoading.create(c).build() : null)
+                .child(roi == null && modal ? ModalLoading.create(c).build() : null)
                 .build();
     }
 
@@ -152,6 +159,7 @@ public class RoiScreenSpec {
                             context.getResources().getText(R.string.roi_not_found), Toast.LENGTH_LONG)
                             .show();
                 });
+                RoiScreen.setModal(c, false);
             } else {
                 RoiScreen.setRoi(c, roi);
             }
@@ -169,9 +177,18 @@ public class RoiScreenSpec {
                                @Prop int offsetX,
                                @Prop int offsetY,
                                @Prop Router router) {
+        if (roi == null) {
+            return;
+        }
+
         router.openResultActivity((int) (offsetX + roi.left),
                 (int) (offsetY + roi.top),
                 roi.color,
                 roi.roiMark);
+    }
+
+    @OnUpdateState
+    static void setModal(StateValue<Boolean> modal, @Param boolean value) {
+        modal.set(value);
     }
 }
