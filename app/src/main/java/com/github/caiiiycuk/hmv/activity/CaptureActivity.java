@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Size;
+import android.view.Surface;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -92,6 +93,7 @@ public class CaptureActivity extends AppCompatActivity implements LifecycleOwner
     private void startCamera() {
         Point screenSize = new Point();
         getWindowManager().getDefaultDisplay().getSize(screenSize);
+        int rotation = getWindowManager().getDefaultDisplay().getRotation();
 
         Size previewSize = new Size(screenSize.x,
                 screenSize.y - Ui.getPx(R.dimen.title_height));
@@ -100,6 +102,7 @@ public class CaptureActivity extends AppCompatActivity implements LifecycleOwner
 
         Preview preview = new Preview.Builder()
                 .setTargetResolution(previewSize)
+                .setTargetRotation(rotation)
                 .build();
 
         preview.setSurfaceProvider(cameraView.getPreviewSurfaceProvider());
@@ -107,6 +110,7 @@ public class CaptureActivity extends AppCompatActivity implements LifecycleOwner
         imageCapture = new ImageCapture.Builder()
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                 .setTargetResolution(targetSize)
+                .setTargetRotation(rotation)
                 .build();
 
         try {
@@ -115,7 +119,10 @@ public class CaptureActivity extends AppCompatActivity implements LifecycleOwner
                     .build();
             processCameraProvider.get().bindToLifecycle(this, selector, preview, imageCapture);
         } catch (Exception e) {
-            e.printStackTrace();
+            runOnUiThread(() -> {
+                String toastMessage = getResources().getString(R.string.unable_to_take_picture) + ": " + e.getMessage();
+                Toast.makeText(CaptureActivity.this, toastMessage, Toast.LENGTH_SHORT).show();
+            });
         }
     }
 

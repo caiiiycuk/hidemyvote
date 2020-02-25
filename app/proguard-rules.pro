@@ -62,6 +62,7 @@
 -keep class com.facebook.jni.** { *; }
 -keep class androidx.core.app.CoreComponentFactory { *; }
 
+# crashlytics
 -keepattributes *Annotation*
 -keepattributes SourceFile,LineNumberTable
 -keep public class * extends java.lang.Exception

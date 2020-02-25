@@ -90,7 +90,7 @@ public class Ui {
 
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
-        if (rotationDegrees != 0) {
+        if (rotationDegrees != 0 && bitmap.getWidth() > bitmap.getHeight()) {
             Matrix matrix = new Matrix();
             matrix.postRotate(rotationDegrees);
 
