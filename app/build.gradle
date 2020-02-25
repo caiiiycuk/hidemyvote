@@ -10,8 +10,8 @@ android {
         applicationId "com.github.caiiiycuk.hma"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1140
-        versionName "1.14"
+        versionCode 1150
+        versionName "1.15"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {

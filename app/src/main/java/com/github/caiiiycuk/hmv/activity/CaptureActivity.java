@@ -104,7 +104,7 @@ public class CaptureActivity extends AppCompatActivity implements LifecycleOwner
 
         preview.setSurfaceProvider(cameraView.getPreviewSurfaceProvider());
 
-        ImageCapture imageCaptureConfig = new ImageCapture.Builder()
+        imageCapture = new ImageCapture.Builder()
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                 .setTargetResolution(targetSize)
                 .build();
@@ -128,7 +128,7 @@ public class CaptureActivity extends AppCompatActivity implements LifecycleOwner
 
             @Override
             public void onCaptureSuccess(@NonNull ImageProxy image) {
-                Bitmap bitmap = Ui.imageProxyToBitmap(image, 0);
+                Bitmap bitmap = Ui.imageProxyToBitmap(image, image.getImageInfo().getRotationDegrees());
                 image.close();
                 if (bitmap == null) {
                     this.onError(new ImageCaptureException(ImageCapture.ERROR_UNKNOWN,
