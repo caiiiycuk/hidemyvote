@@ -1,8 +1,10 @@
 package com.github.caiiiycuk.hmv.screen;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.facebook.litho.ClickEvent;
 import com.facebook.litho.Column;
@@ -142,7 +144,17 @@ public class RoiScreenSpec {
     private static void updateRoi(ComponentContext c, Executor executor, Bitmap bitmap, int method) {
         executor.execute(() -> {
             ROI roi = ROICalculator.calculate(bitmap, method);
-            RoiScreen.setRoi(c, roi);
+
+            if (roi == null) {
+                Ui.post(() -> {
+                    Context context = c.getAndroidContext();
+                    Toast.makeText(context,
+                            context.getResources().getText(R.string.roi_not_found), Toast.LENGTH_LONG)
+                            .show();
+                });
+            } else {
+                RoiScreen.setRoi(c, roi);
+            }
         });
     }
 

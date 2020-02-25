@@ -9,4 +9,5 @@
     <string name="method_soft">SOFT</string>
     <string name="method_hard">HARD</string>
     <string name="share">Share</string>
+    <string name="roi_not_found">Object of interest not found, please retry</string>
 </resources>

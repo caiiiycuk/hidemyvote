@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.github.caiiiycuk.hmv.BuildConfig;
@@ -64,7 +65,7 @@ public class ROICalculator {
     private ROICalculator() {
     }
 
-    @NonNull
+    @Nullable
     @WorkerThread
     public static ROI calculate(Bitmap bitmap, int method) {
         float[] roiPoint = new float[]{bitmap.getWidth() / 2, bitmap.getHeight() / 2};
@@ -113,22 +114,28 @@ public class ROICalculator {
             contours = contours.h_next();
         }
 
-        CvBox2D roiBox;
-        int color = 0;
-        if (selected != null) {
-            cvDrawContours(outImage, selected, CV_RGB(0, 255, 0),
-                    CV_RGB(255, 255, 255), 0, 4, 4);
-            float avgColor = 0;
-            for (int i = 0; i < selected.total(); ++i) {
-                CvPoint point = new CvPoint(cvGetSeqElem(selected, 1));
-                float pixelColor = bitmap.getPixel(point.x(), point.y());
-                avgColor += pixelColor / selected.total();
-            }
-            color = (int) avgColor;
-            roiBox = cvMinAreaRect2(selected);
-        } else {
-            roiBox = cvBox2D();
+        Runnable release = () -> {
+            cvReleaseImage(outImage);
+            cvReleaseImage(grayImage);
+            cvClearMemStorage(storage);
+        };
+
+        if (selected == null) {
+            release.run();
+            return null;
         }
+
+        cvDrawContours(outImage, selected, CV_RGB(0, 255, 0),
+                CV_RGB(255, 255, 255), 0, 4, 4);
+        float avgColor = 0;
+        for (int i = 0; i < selected.total(); ++i) {
+            CvPoint point = new CvPoint(cvGetSeqElem(selected, 1));
+            float pixelColor = bitmap.getPixel(point.x(), point.y());
+            avgColor += pixelColor / selected.total();
+        }
+
+        int color = (int) avgColor;
+        CvBox2D roiBox = cvMinAreaRect2(selected);
 
         cvNot(outImage, outImage);
 
@@ -143,10 +150,9 @@ public class ROICalculator {
         angle = angle < 0 ? angle + 90 : angle;
         float left = x - width / 2;
         float top = y - height / 2;
+
         Bitmap outBitmap = convert2Bitmap(outImage);
-        cvReleaseImage(outImage);
-        cvReleaseImage(grayImage);
-        cvClearMemStorage(storage);
+        release.run();
 
         Bitmap roiMark = Ui.createMark((int) width, (int) height, angle);
         Canvas canvas = new Canvas(outBitmap);
