@@ -6,6 +6,8 @@ buildscript {
         lithoVersion = '0.34.0'
         frescoVersion = '2.1.0'
         daggerVersion = '2.26'
+        cameraxVersion = "1.0.0-alpha10"
+        cameraVersion = "1.0.0-alpha07"
     }
 
     repositories {

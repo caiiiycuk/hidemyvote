@@ -11,6 +11,8 @@ import android.view.Window;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.camera.camera2.Camera2Config;
+import androidx.camera.core.CameraXConfig;
 
 import com.facebook.soloader.SoLoader;
 import com.github.caiiiycuk.hmv.di.ApplicationComponent;
@@ -18,7 +20,7 @@ import com.github.caiiiycuk.hmv.di.DaggerApplicationComponent;
 import com.github.caiiiycuk.hmv.ui.Ui;
 
 public class HideMyVoteApplication extends Application
-        implements Application.ActivityLifecycleCallbacks {
+        implements Application.ActivityLifecycleCallbacks, CameraXConfig.Provider {
 
     private static HideMyVoteApplication instance;
     private static ApplicationComponent applicationComponent;
@@ -124,5 +126,11 @@ public class HideMyVoteApplication extends Application
 
     @Override
     public void onActivityDestroyed(@NonNull Activity activity) {
+    }
+
+    @NonNull
+    @Override
+    public CameraXConfig getCameraXConfig() {
+        return Camera2Config.defaultConfig();
     }
 }

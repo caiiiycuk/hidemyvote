@@ -3,26 +3,21 @@ package com.github.caiiiycuk.hmv.activity;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Size;
-import android.view.Display;
-import android.view.Surface;
-import android.view.TextureView;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.camera.core.CameraX;
+import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
-import androidx.camera.core.ImageCaptureConfig;
+import androidx.camera.core.ImageCaptureException;
 import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
-import androidx.camera.core.PreviewConfig;
+import androidx.camera.lifecycle.ProcessCameraProvider;
+import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
@@ -36,6 +31,7 @@ import com.github.caiiiycuk.hmv.di.Injector;
 import com.github.caiiiycuk.hmv.screen.CaptureScreen;
 import com.github.caiiiycuk.hmv.ui.Ui;
 import com.github.caiiiycuk.hmv.ui.UnScopedEventHandler;
+import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.concurrent.Executor;
 
@@ -49,7 +45,7 @@ public class CaptureActivity extends AppCompatActivity implements LifecycleOwner
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
-    private TextureView cameraView;
+    private PreviewView cameraView;
 
     private ImageCapture imageCapture;
 
@@ -63,10 +59,14 @@ public class CaptureActivity extends AppCompatActivity implements LifecycleOwner
     @Named(Params.BITMAP_HEIGHT)
     int bitmapHeight;
 
+    ListenableFuture<ProcessCameraProvider> processCameraProvider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Injector.forActivity(this).inject(this);
+
+        processCameraProvider = ProcessCameraProvider.getInstance(this);
 
         setContentView(R.layout.activity_01_capture);
 
@@ -87,9 +87,6 @@ public class CaptureActivity extends AppCompatActivity implements LifecycleOwner
             ActivityCompat.requestPermissions(
                     this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
         }
-
-        // Every time the provided texture view changes, recompute layout
-        cameraView.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) -> updateTransform());
     }
 
     private void startCamera() {
@@ -101,29 +98,25 @@ public class CaptureActivity extends AppCompatActivity implements LifecycleOwner
         Size targetSize = new Size(bitmapHeight * previewSize.getWidth() / previewSize.getHeight(),
                 bitmapHeight);
 
-        PreviewConfig previewConfig = new PreviewConfig.Builder()
+        Preview preview = new Preview.Builder()
                 .setTargetResolution(previewSize)
                 .build();
 
-        Preview preview = new Preview(previewConfig);
+        preview.setSurfaceProvider(cameraView.getPreviewSurfaceProvider());
 
-        preview.setOnPreviewOutputUpdateListener(output -> {
-            ViewGroup parent = (ViewGroup) cameraView.getParent();
-            parent.removeView(cameraView);
-            parent.addView(cameraView, 0);
-
-            cameraView.setSurfaceTexture(output.getSurfaceTexture());
-            updateTransform();
-        });
-
-        ImageCaptureConfig imageCaptureConfig = new ImageCaptureConfig.Builder()
-                .setCaptureMode(ImageCapture.CaptureMode.MAX_QUALITY)
+        ImageCapture imageCaptureConfig = new ImageCapture.Builder()
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                 .setTargetResolution(targetSize)
                 .build();
 
-        imageCapture = new ImageCapture(imageCaptureConfig);
-
-        CameraX.bindToLifecycle(this, preview, imageCapture);
+        try {
+            CameraSelector selector = new CameraSelector.Builder()
+                    .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                    .build();
+            processCameraProvider.get().bindToLifecycle(this, selector, preview, imageCapture);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void captureImage() {
@@ -131,55 +124,28 @@ public class CaptureActivity extends AppCompatActivity implements LifecycleOwner
             return;
         }
 
-        imageCapture.takePicture(executor, new ImageCapture.OnImageCapturedListener() {
+        imageCapture.takePicture(executor, new ImageCapture.OnImageCapturedCallback() {
+
             @Override
-            public void onCaptureSuccess(ImageProxy image, int rotationDegrees) {
-                Bitmap bitmap = Ui.imageProxyToBitmap(image, rotationDegrees);
+            public void onCaptureSuccess(@NonNull ImageProxy image) {
+                Bitmap bitmap = Ui.imageProxyToBitmap(image, 0);
                 image.close();
                 if (bitmap == null) {
-                    this.onError(ImageCapture.ImageCaptureError.UNKNOWN_ERROR, "Unable to create bitmap", null);
+                    this.onError(new ImageCaptureException(ImageCapture.ERROR_UNKNOWN,
+                            "Unable to create bitmap", null));
                     return;
                 }
                 router.openSelectionActivity(bitmap);
             }
 
             @Override
-            public void onError(@NonNull ImageCapture.ImageCaptureError imageCaptureError, @NonNull String message, @Nullable Throwable cause) {
+            public void onError(@NonNull ImageCaptureException exception) {
                 cameraView.post(() -> {
-                    String toastMessage = getResources().getString(R.string.unable_to_take_picture) + ": " + message;
+                    String toastMessage = getResources().getString(R.string.unable_to_take_picture) + ": " + exception.getMessage();
                     Toast.makeText(CaptureActivity.this, toastMessage, Toast.LENGTH_SHORT).show();
                 });
             }
         });
-    }
-
-    private void updateTransform() {
-        Matrix matrix = new Matrix();
-
-        float centerX = cameraView.getWidth() / 2f;
-        float centerY = cameraView.getHeight() / 2f;
-
-        Display display = cameraView.getDisplay();
-        int rotation = 0;
-        if (display != null) {
-            switch (display.getRotation()) {
-                case Surface.ROTATION_0:
-                    rotation = 0;
-                    break;
-                case Surface.ROTATION_90:
-                    rotation = 90;
-                    break;
-                case Surface.ROTATION_180:
-                    rotation = 180;
-                    break;
-                case Surface.ROTATION_270:
-                    rotation = 270;
-                    break;
-            }
-        }
-
-        matrix.postRotate(-rotation, centerX, centerY);
-        cameraView.setTransform(matrix);
     }
 
     @Override
