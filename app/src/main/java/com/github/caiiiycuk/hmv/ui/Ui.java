@@ -109,7 +109,6 @@ public class Ui {
         Paint textPaint = new Paint();
         textPaint.setAntiAlias(true);
         textPaint.setStyle(Paint.Style.FILL);
-        textPaint.setColor(Color.argb(128, 0, 0, 0));
         textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setTypeface(fonts[random.nextInt(fonts.length)]);
 
@@ -122,15 +121,22 @@ public class Ui {
             size = size * width / measuredWidth;
         }
 
-        canvas.rotate(angle, width / 2, height / 2);
+        canvas.rotate((angle -15 + random.nextInt(31)) % 30, width / 2, height / 2);
 
         textPaint.setTextSize(size);
 
         float x = width / 2;
         float y = height / 2 - (textPaint.descent() + textPaint.ascent()) / 2;
 
+        textPaint.setColor(Color.argb(128, 0, 0, 0));
+        canvas.drawText(text, 0, text.length(), x, y, textPaint);
+
         for (int i = 0; i < 10; ++i) {
-            canvas.drawText(text, 0, text.length(), x + i, y + i, textPaint);
+            textPaint.setColor(Color.argb((int) (128.f * (10 - i) / 10), 0, 0, 0));
+            canvas.drawText(text, 0, text.length(), x + 1, y, textPaint);
+            canvas.drawText(text, 0, text.length(), x, y + 1, textPaint);
+            canvas.drawText(text, 0, text.length(), x - 1, y, textPaint);
+            canvas.drawText(text, 0, text.length(), x, y - 1, textPaint);
         }
 
         return bitmap;

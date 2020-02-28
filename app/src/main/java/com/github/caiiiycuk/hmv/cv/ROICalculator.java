@@ -1,14 +1,11 @@
 package com.github.caiiiycuk.hmv.cv;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.github.caiiiycuk.hmv.BuildConfig;
-import com.github.caiiiycuk.hmv.ui.Ui;
 
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacv.AndroidFrameConverter;
@@ -144,19 +141,15 @@ public class ROICalculator {
         float y = center.y();
         float width = size.width();
         float height = size.height();
-        int angle = ((int) roiBox.angle() % 90);
-        angle = angle < 0 ? angle + 90 : angle;
+        int angle = (int) roiBox.angle();
         float left = x - width / 2;
         float top = y - height / 2;
 
         Bitmap outBitmap = convert2Bitmap(outImage);
         release.run();
 
-        Bitmap roiMark = Ui.createMark((int) width, (int) height, angle);
-        Canvas canvas = new Canvas(outBitmap);
-        canvas.drawBitmap(roiMark, left, top, new Paint());
-
-        return new ROI(outBitmap, roiMark, left, top, color);
+        return new ROI(outBitmap, left, top, color,
+                (int) width, (int) height, angle);
     }
 
     private static IplImage convert2Gray(Bitmap bitmap) {

@@ -43,12 +43,15 @@ public class Router {
         startActivity(intent, RoiActivity.class);
     }
 
-    public void openResultActivity(int x, int y, @ColorInt int color, Bitmap roiMark) {
+    public void openResultActivity(int x, int y, @ColorInt int color,
+            int markWidth, int markHeight, float markAngle) {
         Intent intent = new Intent();
         intent.putExtra(Params.X, x);
         intent.putExtra(Params.Y, y);
         intent.putExtra(Params.COLOR, color);
-        HideMyVoteApplication.setCurrentRoiMark(roiMark);
+        intent.putExtra(Params.WIDTH, markWidth);
+        intent.putExtra(Params.HEIGHT, markHeight);
+        intent.putExtra(Params.ANGLE, markAngle);
         startActivity(intent, ResultActivity.class);
     }
 

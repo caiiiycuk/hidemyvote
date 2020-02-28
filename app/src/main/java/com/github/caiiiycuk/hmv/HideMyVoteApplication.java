@@ -28,9 +28,6 @@ public class HideMyVoteApplication extends Application
     @Nullable
     private static Bitmap currentBitmap;
 
-    @Nullable
-    private static Bitmap currentRoiMark;
-
     public static Context getContext() {
         return instance.getApplicationContext();
     }
@@ -38,11 +35,6 @@ public class HideMyVoteApplication extends Application
     @Nullable
     public static Bitmap getCurrentBitmap() {
         return currentBitmap;
-    }
-
-    @Nullable
-    public static Bitmap getCurrentRoiMark() {
-        return currentRoiMark;
     }
 
     public static void setCurrentBitmap(@Nullable Bitmap bitmap) {
@@ -58,15 +50,6 @@ public class HideMyVoteApplication extends Application
 
         if (prevBitmap != null) {
             prevBitmap.recycle();
-        }
-    }
-
-    public static void setCurrentRoiMark(@Nullable Bitmap currentRoiMark) {
-        Bitmap prevRoiMark = HideMyVoteApplication.currentRoiMark;
-        HideMyVoteApplication.currentRoiMark = currentRoiMark;
-
-        if (prevRoiMark != null) {
-            prevRoiMark.recycle();
         }
     }
 

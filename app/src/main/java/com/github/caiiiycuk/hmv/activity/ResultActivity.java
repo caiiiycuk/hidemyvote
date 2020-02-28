@@ -1,5 +1,6 @@
 package com.github.caiiiycuk.hmv.activity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
@@ -24,11 +25,6 @@ public class ResultActivity extends AppCompatActivity {
     Bitmap bitmap;
 
     @Inject
-    @Nullable
-    @Named(Params.ROIMARK)
-    Bitmap roiMark;
-
-    @Inject
     Router router;
 
     @Override
@@ -36,11 +32,16 @@ public class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Injector.forActivity(this).inject(this);
 
-        int x = getIntent().getIntExtra(Params.X, -1);
-        int y = getIntent().getIntExtra(Params.Y, -1);
-        @ColorInt int color = getIntent().getIntExtra(Params.COLOR, -1);
+        Intent intent = getIntent();
+        int x = intent.getIntExtra(Params.X, -1);
+        int y = intent.getIntExtra(Params.Y, -1);
+        int width = intent.getIntExtra(Params.WIDTH, -1);
+        int height = intent.getIntExtra(Params.HEIGHT, -1);
+        float angle = intent.getFloatExtra(Params.ANGLE, 0);
+        @ColorInt int color = intent.getIntExtra(Params.COLOR, -1);
 
-        if (bitmap == null || roiMark == null || y == -1 || x == -1 || color == -1) {
+        if (bitmap == null || y == -1 || x == -1 || color == -1 ||
+            width == -1 || height == -1) {
             router.openCaptureActivity();
             finish();
             return;
@@ -50,10 +51,12 @@ public class ResultActivity extends AppCompatActivity {
         ComponentContext c = new ComponentContext(this);
         LithoView view = LithoView.create(this, ResultScreen.create(c)
                 .bitmap(bitmap)
-                .roiMark(roiMark)
                 .router(router)
                 .x(x)
                 .y(y)
+                .markWidth(width)
+                .markHeight(height)
+                .markAngle(angle)
                 .build());
 
         setContentView(view);

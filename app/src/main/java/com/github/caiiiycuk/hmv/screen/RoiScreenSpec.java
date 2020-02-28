@@ -184,7 +184,9 @@ public class RoiScreenSpec {
         router.openResultActivity((int) (offsetX + roi.left),
                 (int) (offsetY + roi.top),
                 roi.color,
-                roi.roiMark);
+                roi.markWidth,
+                roi.markHeight,
+                roi.markAngle);
     }
 
     @OnUpdateState

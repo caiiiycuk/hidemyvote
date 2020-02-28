@@ -22,15 +22,10 @@ public class ActivityModule {
     @Nullable
     private final Bitmap bitmap;
 
-    @Nullable
-    private final Bitmap roiMark;
-
     public ActivityModule(@NonNull Activity activity,
-                          @Nullable Bitmap bitmap,
-                          @Nullable Bitmap roiMark) {
+                          @Nullable Bitmap bitmap) {
         this.activity = activity;
         this.bitmap = bitmap;
-        this.roiMark = roiMark;
     }
 
     @NonNull
@@ -46,14 +41,6 @@ public class ActivityModule {
     @Named(Params.BITMAP)
     public Bitmap bitmap() {
         return bitmap;
-    }
-
-    @NonNull
-    @Provides
-    @ActivityScope
-    @Named(Params.ROIMARK)
-    public Bitmap roiMark() {
-        return roiMark;
     }
 
     @Provides

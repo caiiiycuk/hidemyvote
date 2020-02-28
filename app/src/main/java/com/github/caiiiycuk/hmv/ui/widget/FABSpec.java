@@ -25,8 +25,9 @@ public class FABSpec {
     @OnCreateLayout
     static Component onCreateLayout(ComponentContext c,
                                     @Prop @DrawableRes int drawableRes,
-                                    @Prop int align) {
-        return Row.create(c)
+                                    @Prop int align,
+                                    @Prop(optional=true) boolean stickToTop) {
+        Row.Builder builder = Row.create(c)
                 .child(Image.create(c)
                         .background(Ui.circle(R.color.colorPrimaryDark))
                         .paddingRes(YogaEdge.ALL, R.dimen.ident)
@@ -36,8 +37,15 @@ public class FABSpec {
                         .scaleType(ImageView.ScaleType.FIT_CENTER)
                         .build())
                 .positionType(YogaPositionType.ABSOLUTE)
-                .positionPercent(align == LEFT ? YogaEdge.LEFT : YogaEdge.RIGHT, 5)
-                .positionPercent(YogaEdge.BOTTOM, 5)
-                .build();
+                .positionPercent(align == LEFT ? YogaEdge.LEFT : YogaEdge.RIGHT, 5);
+
+        if (stickToTop) {
+            builder.positionPx(YogaEdge.TOP, Ui.getPx(R.dimen.title_height) +
+                    Ui.getPx(R.dimen.tint_height) + Ui.getPx(R.dimen.ident));
+        } else {
+            builder.positionPx(YogaEdge.BOTTOM, Ui.getPx(R.dimen.ident) * 2);
+        }
+
+        return builder.build();
     }
 }

@@ -10,8 +10,8 @@ android {
         applicationId "com.github.caiiiycuk.hma"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1160
-        versionName "1.16"
+        versionCode 1170
+        versionName "1.17"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
@@ -54,7 +54,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    implementation 'com.google.firebase:firebase-analytics:17.2.3'
     implementation 'com.google.firebase:firebase-crashlytics:17.0.0-beta01'
 
     implementation "com.google.dagger:dagger:$daggerVersion"

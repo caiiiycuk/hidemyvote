@@ -116,6 +116,12 @@ public class ResultScreenSpec {
                         .clickHandler(ResultScreen.onBackClick(c))
                         .build())
                 .child(FAB.create(c)
+                        .align(FABSpec.LEFT)
+                        .drawableRes(R.drawable.refresh)
+                        .stickToTop(true)
+                        .clickHandler(ResultScreen.onColorClick(c, tintColor))
+                        .build())
+                .child(FAB.create(c)
                         .align(FABSpec.RIGHT)
                         .drawableRes(R.drawable.share)
                         .clickHandler(ResultScreen.onShare(c))
@@ -127,11 +133,14 @@ public class ResultScreenSpec {
     @OnAttached
     static void onAttached(ComponentContext c,
                            @Prop Bitmap bitmap,
-                           @Prop Bitmap roiMark,
                            @Prop float x,
                            @Prop float y,
+                           @Prop int markWidth,
+                           @Prop int markHeight,
+                           @Prop float markAngle,
                            @State @ColorRes int tintColor) {
-        ResultScreen.updateResult(c, bitmap, roiMark, x, y, tintColor);
+        ResultScreen.updateResult(c, bitmap, x, y,
+                markWidth, markHeight, markAngle, tintColor);
     }
 
     @OnDetached
@@ -145,23 +154,26 @@ public class ResultScreenSpec {
     static void updateResult(StateValue<Bitmap> result,
                              StateValue<Integer> tintColor,
                              @Param Bitmap pBitmap,
-                             @Param Bitmap pRoiMark,
                              @Param float pX,
                              @Param float pY,
+                             @Param int pWidth,
+                             @Param int pHeight,
+                             @Param float pAngle,
                              @Param @ColorRes int pTintColor) {
         Bitmap prevResult = result.get();
-
+        Bitmap roiMark = Ui.createMark(pWidth, pHeight, pAngle);
         Bitmap resultBitmap = pBitmap.copy(pBitmap.getConfig(), true);
         Canvas canvas = new Canvas(resultBitmap);
         Paint paint = new Paint();
         paint.setColorFilter(new PorterDuffColorFilter(Ui.getColor(pTintColor), PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(pRoiMark, pX, pY, paint);
+        canvas.drawBitmap(roiMark, pX, pY, paint);
         result.set(resultBitmap);
         tintColor.set(pTintColor);
 
         if (prevResult != null) {
             Ui.post(prevResult::recycle);
         }
+        roiMark.recycle();
     }
 
     @OnEvent(ClickEvent.class)
@@ -207,10 +219,13 @@ public class ResultScreenSpec {
     @OnEvent(ClickEvent.class)
     static void onColorClick(ComponentContext c,
                              @Prop Bitmap bitmap,
-                             @Prop Bitmap roiMark,
                              @Prop float x,
                              @Prop float y,
+                             @Prop int markWidth,
+                             @Prop int markHeight,
+                             @Prop float markAngle,
                              @Param @ColorRes int pTintColor) {
-        ResultScreen.updateResult(c, bitmap, roiMark, x, y, pTintColor);
+        ResultScreen.updateResult(c, bitmap, x, y,
+                markWidth, markHeight, markAngle, pTintColor);
     }
 }

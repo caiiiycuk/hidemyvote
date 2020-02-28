@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Size;
-import android.view.Surface;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 

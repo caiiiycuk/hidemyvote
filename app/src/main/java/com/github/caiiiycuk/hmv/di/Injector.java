@@ -15,9 +15,7 @@ public class Injector {
     public static ActivityComponent forActivity(@NonNull Activity activity) {
         return DaggerActivityComponent.builder()
                 .applicationComponent(HideMyVoteApplication.getApplicationComponent())
-                .activityModule(new ActivityModule(activity,
-                        HideMyVoteApplication.getCurrentBitmap(),
-                        HideMyVoteApplication.getCurrentRoiMark()))
+                .activityModule(new ActivityModule(activity, HideMyVoteApplication.getCurrentBitmap()))
                 .build();
     }
 

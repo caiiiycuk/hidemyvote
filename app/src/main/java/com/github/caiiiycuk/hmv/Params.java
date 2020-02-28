@@ -6,9 +6,13 @@ public interface Params {
 
     String Y = "y";
 
-    String BITMAP = "bitmap";
+    String WIDTH = "width";
 
-    String ROIMARK = "roiMark";
+    String HEIGHT = "height";
+
+    String ANGLE = "angle";
+
+    String BITMAP = "bitmap";
 
     String COLOR = "color";
 
