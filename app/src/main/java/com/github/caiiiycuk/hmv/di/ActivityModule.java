@@ -35,7 +35,7 @@ public class ActivityModule {
         return activity;
     }
 
-    @NonNull
+    @Nullable
     @Provides
     @ActivityScope
     @Named(Params.BITMAP)

@@ -5,7 +5,7 @@ buildscript {
         javacvVersion = '1.5.2'
         lithoVersion = '0.34.0'
         frescoVersion = '2.1.0'
-        daggerVersion = '2.26'
+        daggerVersion = '2.27'
         cameraxVersion = "1.0.0-beta01"
         cameraVersion = "1.0.0-alpha08"
     }
@@ -16,10 +16,10 @@ buildscript {
         
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.0'
+        classpath 'com.android.tools.build:gradle:3.6.1'
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.28.0'
         classpath 'com.google.gms:google-services:4.3.3'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.0.0-beta02'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.0.0-beta03'
     }
 }
 
