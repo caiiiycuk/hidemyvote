@@ -104,7 +104,7 @@ public class CaptureActivity extends AppCompatActivity implements LifecycleOwner
                 .setTargetRotation(rotation)
                 .build();
 
-        preview.setSurfaceProvider(cameraView.getPreviewSurfaceProvider());
+        preview.setSurfaceProvider(cameraView.createSurfaceProvider(null));
 
         imageCapture = new ImageCapture.Builder()
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
